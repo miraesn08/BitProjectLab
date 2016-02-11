@@ -7,21 +7,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="kr.co.bit.osf.projectlab.MainActivity">
-
+    tools:context="kr.co.bit.osf.projectlab.CameraActivity">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:weightSum="1">
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnCamera"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/button_caption_camera" />
+            android:text="Camera Capture"
+            android:id="@+id/btnCameraCapture"
+            android:layout_gravity="center_horizontal" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ivCameraCaptured"
+            android:layout_weight="0.81" />
     </LinearLayout>
 </RelativeLayout>
