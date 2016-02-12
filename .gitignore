@@ -36,4 +36,4 @@ proguard/
 captures/
 
 ### Android Patch ###
-gen-external-apklibs
+gen-external-apklibs.idea
