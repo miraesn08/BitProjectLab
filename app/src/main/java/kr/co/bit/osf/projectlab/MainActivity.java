@@ -38,6 +38,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        (findViewById(R.id.btnListView)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "btnListView clicked");
+                Intent intent = new Intent(getApplicationContext(), ListViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
 }
