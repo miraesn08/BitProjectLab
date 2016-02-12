@@ -26,4 +26,10 @@
         android:text="Preview"
         android:id="@+id/AlbumItemPreviewButton"
         android:layout_gravity="right" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Delete"
+        android:id="@+id/AlbumItemDeleteButton" />
 </LinearLayout>

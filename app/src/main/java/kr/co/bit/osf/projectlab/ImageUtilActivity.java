@@ -63,7 +63,6 @@ public class ImageUtilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageListAdapter.clear();
-                imageListView.invalidateViews();
 
                 // http://stackoverflow.com/questions/4195660/get-list-of-photo-galleries-on-android
                 // which image properties are we querying
@@ -118,7 +117,8 @@ public class ImageUtilActivity extends AppCompatActivity {
                                 + "  data=" + data);
 
                         // ListView에 아이템 추가
-                        AlbumItemDTO dto = new AlbumItemDTO(0,0,data,data,0);
+                        File imageFile = new File(data);
+                        AlbumItemDTO dto = new AlbumItemDTO(0,0,imageFile.getName(),imageFile.getAbsolutePath(),0);
                         imageListAdapter.add(dto);
                     } while (cur.moveToNext());
 
@@ -138,7 +138,6 @@ public class ImageUtilActivity extends AppCompatActivity {
                     }
                     //
                     imageListAdapter.clear();
-                    imageListView.invalidateViews();
                     for(File item : albumList) {
                         AlbumItemDTO dto = new AlbumItemDTO(0,0,item.getName(),item.getAbsolutePath(),0);
                         imageListAdapter.add(dto);
