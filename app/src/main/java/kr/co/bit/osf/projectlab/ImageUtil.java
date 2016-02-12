@@ -11,6 +11,8 @@ import java.util.Date;
 public class ImageUtil {
     private static final String TAG = "ImageUtil";
 
+    public static final String FOLDER_NAME = "FlashCard";
+
     // http://developer.android.com/intl/ko/guide/topics/media/camera.html
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -21,6 +23,15 @@ public class ImageUtil {
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
+    public static File getMediaStorageDir() {
+        return new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), FOLDER_NAME);
+    }
+
+    public static Uri getMediaStorageDirUri(){
+        return Uri.fromFile(getMediaStorageDir());
+    }
+
     /** Create a File for saving an image or video */
     public static File getOutputMediaFile(int type){
         Log.i(TAG, "getOutputMediaFile(" + type + ")");
@@ -29,8 +40,7 @@ public class ImageUtil {
 
         //File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
         //        Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "");
+        File mediaStorageDir = getMediaStorageDir();
         Log.i(TAG, "mediaStorageDir:" + mediaStorageDir);
         // This location works best if you want the created images to be shared
         // between applications and persist after your app has been uninstalled.
