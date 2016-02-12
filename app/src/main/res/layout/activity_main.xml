@@ -23,5 +23,12 @@
             android:id="@+id/btnCamera"
             android:layout_gravity="center_horizontal"
             android:text="@string/button_caption_camera" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnImageUtil"
+            android:layout_gravity="center_horizontal"
+            android:text="Image Util" />
     </LinearLayout>
 </RelativeLayout>
