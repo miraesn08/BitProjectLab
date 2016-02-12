@@ -17,17 +17,48 @@
         android:layout_centerHorizontal="true"
         android:weightSum="1">
 
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Camera Capture"
-            android:id="@+id/btnCameraCapture"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capture"
+                android:id="@+id/btnCameraCapture"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capture2"
+                android:id="@+id/btnCameraCapture2"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose"
+                android:id="@+id/btnChooseImage"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ENV"
+                android:id="@+id/btnShowEnvironment"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/ivCameraCaptured"
-            android:layout_weight="0.81" />
+            android:layout_weight="0.81"
+            android:layout_gravity="center" />
     </LinearLayout>
 </RelativeLayout>
