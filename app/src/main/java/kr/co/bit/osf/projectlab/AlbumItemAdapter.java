@@ -69,11 +69,25 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
 
         // http://www.vogella.com/tutorials/AndroidListView/article.html
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.activity_image_util_album_item, parent, false);
-        ImageView itemImageView = (ImageView) rowView.findViewById(R.id.AlbumItemImageView);
-        TextView itemTextView = (TextView) rowView.findViewById(R.id.AlbumItemText);
-        Button previewButton = (Button) rowView.findViewById(R.id.AlbumItemPreviewButton);
-        Button deleteButton = (Button) rowView.findViewById(R.id.AlbumItemDeleteButton);
+        View rowView;
+        ImageView itemImageView;
+        TextView itemTextView;
+        Button previewButton;
+        Button deleteButton;
+
+        if (position % 2 == 0) {
+            rowView = inflater.inflate(R.layout.activity_image_util_album_item_even, parent, false);
+            itemImageView = (ImageView) rowView.findViewById(R.id.AlbumEvenItemImageView);
+            itemTextView = (TextView) rowView.findViewById(R.id.AlbumEvenItemText);
+            previewButton = (Button) rowView.findViewById(R.id.AlbumEvenItemPreviewButton);
+            deleteButton = (Button) rowView.findViewById(R.id.AlbumEvenItemDeleteButton);
+        } else {
+            rowView = inflater.inflate(R.layout.activity_image_util_album_item, parent, false);
+            itemImageView = (ImageView) rowView.findViewById(R.id.AlbumItemImageView);
+            itemTextView = (TextView) rowView.findViewById(R.id.AlbumItemText);
+            previewButton = (Button) rowView.findViewById(R.id.AlbumItemPreviewButton);
+            deleteButton = (Button) rowView.findViewById(R.id.AlbumItemDeleteButton);
+        }
 
 /*
         // 리스트가 길어지면서 현재 화면에 보이지 않는 아이템은 converView가 null인 상태로 들어 옴
@@ -174,6 +188,7 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
 
         switch (v.getId()) {
             case R.id.AlbumItemPreviewButton:
+            case R.id.AlbumEvenItemPreviewButton:
                 Toast.makeText(context, clickedItem.getImageUrl(),
                         Toast.LENGTH_SHORT).show();
                 //
@@ -185,6 +200,7 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
                 //
                 break;
             case R.id.AlbumItemDeleteButton:
+            case R.id.AlbumEvenItemDeleteButton:
                 //Log.i(TAG, "delete : " + clickedItem.getPosition());
                 final int itemPosition = clickedItem.getPosition();
                 view.animate().setDuration(2000).alpha(0)
