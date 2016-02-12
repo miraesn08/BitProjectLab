@@ -1,5 +1,6 @@
 package kr.co.bit.osf.projectlab;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,9 +11,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.io.File;
+import java.util.List;
 
 public class ImageUtilActivity extends AppCompatActivity {
     static final String TAG = "ImageUtilActivity";
@@ -28,6 +29,9 @@ public class ImageUtilActivity extends AppCompatActivity {
         (findViewById(R.id.btnGetOutputMediaFileUri)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // sd card check
+                Log.i(TAG,"sd card is ? " + ImageUtil.isSDPresent());
+                //
                 Log.i(TAG, "btnGetOutputMediaFileUri clicked");
                 File outputName = ImageUtil.getOutputMediaFile(ImageUtil.MEDIA_TYPE_IMAGE);
                 if (outputName != null) {
@@ -42,6 +46,8 @@ public class ImageUtilActivity extends AppCompatActivity {
         (findViewById(R.id.btnGetImageList)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageListAdapter.clear();
+
                 // http://stackoverflow.com/questions/4195660/get-list-of-photo-galleries-on-android
                 // which image properties are we querying
                 String[] projection = new String[]{
@@ -104,6 +110,26 @@ public class ImageUtilActivity extends AppCompatActivity {
             }
         });
 
+        (findViewById(R.id.btnGetAlbumList)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<File> albumList = ImageUtil.getImageListFromDefaultAlbum(getApplicationContext());
+                if (albumList.size() > 0) {
+                    for(File item : albumList) {
+                        Log.i(TAG, "album image : " + item.getName());
+                    }
+                    //
+                    imageListAdapter.clear();
+                    for(File item : albumList) {
+                        imageListAdapter.add(item.getName());
+                    }
+                    imageListView.setVisibility(View.VISIBLE);
+                } else {
+                    Log.i(TAG, "there is no image in album.");
+                }
+            }
+        });
+
         // http://berabue.blogspot.kr/2014/05/android-listview.html
         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
         imageListAdapter = new ArrayAdapter<>(getApplicationContext(),
@@ -128,7 +154,14 @@ public class ImageUtilActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
             // 이벤트 발생 시 해당 아이템 위치의 텍스트를 출력
-            Toast.makeText(getApplicationContext(), imageListAdapter.getItem(arg2), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), imageListAdapter.getItem(arg2), Toast.LENGTH_SHORT).show();
+
+            // http://stackoverflow.com/questions/1740654/view-image-in-action-view-intent
+            Intent intent = new Intent();
+            intent.setAction(android.content.Intent.ACTION_VIEW);
+            File file = new File(imageListAdapter.getItem(arg2));
+            intent.setDataAndType(Uri.fromFile(file), "image/*");
+            startActivity(intent);
         }
     };
 }

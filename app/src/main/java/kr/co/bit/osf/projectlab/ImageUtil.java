@@ -1,17 +1,22 @@
 package kr.co.bit.osf.projectlab;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ImageUtil {
     private static final String TAG = "ImageUtil";
 
-    public static final String FOLDER_NAME = "FlashCard";
+    public static final String ALBUM_NAME = "FlashCard";
 
     // http://developer.android.com/intl/ko/guide/topics/media/camera.html
     public static final int MEDIA_TYPE_IMAGE = 1;
@@ -25,7 +30,7 @@ public class ImageUtil {
 
     public static File getMediaStorageDir() {
         return new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), FOLDER_NAME);
+                Environment.DIRECTORY_PICTURES), ALBUM_NAME);
     }
 
     public static Uri getMediaStorageDirUri(){
@@ -70,4 +75,57 @@ public class ImageUtil {
         return mediaFile;
     }
 
+    // http://stackoverflow.com/questions/7429228/check-whether-the-sd-card-is-available-or-not-programmatically
+    public static boolean isSDPresent() {
+        return android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+    }
+
+    public static List<File> getImageListFromDefaultAlbum(Context context) {
+        List<File> imageList = new ArrayList<>();
+
+        String[] projection = new String[]{
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Images.Media.DATE_TAKEN,
+                MediaStore.Images.Media.DATA
+        };
+
+        // content:// style URI for the "primary" external storage volume
+        Uri images = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+        // Make the query.
+        Cursor cur = context.getContentResolver().query(images,
+                projection, // Which columns to return
+                null,       // Which rows to return (all rows)
+                null,       // Selection arguments (none)
+                null        // Ordering
+        );
+        if (cur == null) {
+            return imageList;
+        }
+
+        if (cur.moveToFirst()) {
+            String bucket;
+            String data;
+
+            int bucketColumn = cur.getColumnIndex(
+                    MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
+
+            int dataColumn = cur.getColumnIndex(
+                    MediaStore.Images.Media.DATA);
+
+            do {
+                // Get the field values
+                bucket = cur.getString(bucketColumn);
+                data = cur.getString(dataColumn);
+
+                // Do something with the values.
+                if (ALBUM_NAME.equals(bucket)) {
+                    imageList.add(new File(data));
+                }
+            } while (cur.moveToNext());
+        }
+
+        return imageList;
+    }
 }
