@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/darker_gray">
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/AlbumItemImageView"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/star_big_on"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:text="Text"
+        android:id="@+id/AlbumItemText"
+        android:gravity="center_vertical"
+        android:layout_weight="1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Preview"
+        android:id="@+id/AlbumItemPreviewButton"
+        android:layout_gravity="right" />
+</LinearLayout>

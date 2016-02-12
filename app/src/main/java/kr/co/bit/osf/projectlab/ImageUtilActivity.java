@@ -9,22 +9,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.io.File;
 import java.util.List;
 
 public class ImageUtilActivity extends AppCompatActivity {
-    static final String TAG = "ImageUtilActivity";
+    private static final String TAG = "ImageUtilActivity";
 
     private ListView imageListView;
-    private ArrayAdapter<String> imageListAdapter;
+    private AlbumItemAdapter imageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_util);
+
+        // http://berabue.blogspot.kr/2014/05/android-listview.html
+        // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
+        //imageListAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
+        imageListAdapter = new AlbumItemAdapter(getApplicationContext(), this);
+
+        // Xml에서 추가한 ListView 연결
+        imageListView = (ListView) findViewById(R.id.imageListView);
+
+        // ListView에 어댑터 연결
+        imageListView.setAdapter(imageListAdapter);
+
+        // ListView 아이템 터치 시 이벤트 추가
+        //imageListView.setOnItemClickListener(onClickImageListItem);
+
+        //
+        imageListView.setVisibility(View.INVISIBLE);
 
         (findViewById(R.id.btnGetOutputMediaFileUri)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +63,7 @@ public class ImageUtilActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 imageListAdapter.clear();
+                imageListView.invalidateViews();
 
                 // http://stackoverflow.com/questions/4195660/get-list-of-photo-galleries-on-android
                 // which image properties are we querying
@@ -101,7 +118,8 @@ public class ImageUtilActivity extends AppCompatActivity {
                                 + "  data=" + data);
 
                         // ListView에 아이템 추가
-                        imageListAdapter.add(data);
+                        AlbumItemDTO dto = new AlbumItemDTO(0,0,data,data,0);
+                        imageListAdapter.add(dto);
                     } while (cur.moveToNext());
 
                     //
@@ -120,8 +138,10 @@ public class ImageUtilActivity extends AppCompatActivity {
                     }
                     //
                     imageListAdapter.clear();
+                    imageListView.invalidateViews();
                     for(File item : albumList) {
-                        imageListAdapter.add(item.getName());
+                        AlbumItemDTO dto = new AlbumItemDTO(0,0,item.getName(),item.getAbsolutePath(),0);
+                        imageListAdapter.add(dto);
                     }
                     imageListView.setVisibility(View.VISIBLE);
                 } else {
@@ -130,22 +150,6 @@ public class ImageUtilActivity extends AppCompatActivity {
             }
         });
 
-        // http://berabue.blogspot.kr/2014/05/android-listview.html
-        // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
-        imageListAdapter = new ArrayAdapter<>(getApplicationContext(),
-                android.R.layout.simple_list_item_1);
-
-        // Xml에서 추가한 ListView 연결
-        imageListView = (ListView) findViewById(R.id.imageListView);
-
-        // ListView에 어댑터 연결
-        imageListView.setAdapter(imageListAdapter);
-
-        // ListView 아이템 터치 시 이벤트 추가
-        imageListView.setOnItemClickListener(onClickImageListItem);
-
-        //
-        imageListView.setVisibility(View.INVISIBLE);
     }
 
     // 아이템 터치 이벤트
@@ -159,7 +163,8 @@ public class ImageUtilActivity extends AppCompatActivity {
             // http://stackoverflow.com/questions/1740654/view-image-in-action-view-intent
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
-            File file = new File(imageListAdapter.getItem(arg2));
+            AlbumItemDTO dto = (AlbumItemDTO)imageListAdapter.getItem(arg2);
+            File file = new File(dto.getImageUrl());
             intent.setDataAndType(Uri.fromFile(file), "image/*");
             startActivity(intent);
         }
