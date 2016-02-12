@@ -7,11 +7,18 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 
 public class ImageUtilActivity extends AppCompatActivity {
     static final String TAG = "ImageUtilActivity";
+
+    private ListView imageListView;
+    private ArrayAdapter<String> imageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +93,42 @@ public class ImageUtilActivity extends AppCompatActivity {
                         Log.i(TAG, " bucket=" + bucket
                                 + "  date_taken=" + date
                                 + "  data=" + data);
+
+                        // ListView에 아이템 추가
+                        imageListAdapter.add(data);
                     } while (cur.moveToNext());
+
+                    //
+                    imageListView.setVisibility(View.VISIBLE);
                 }
             }
         });
+
+        // http://berabue.blogspot.kr/2014/05/android-listview.html
+        // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
+        imageListAdapter = new ArrayAdapter<>(getApplicationContext(),
+                android.R.layout.simple_list_item_1);
+
+        // Xml에서 추가한 ListView 연결
+        imageListView = (ListView) findViewById(R.id.imageListView);
+
+        // ListView에 어댑터 연결
+        imageListView.setAdapter(imageListAdapter);
+
+        // ListView 아이템 터치 시 이벤트 추가
+        imageListView.setOnItemClickListener(onClickImageListItem);
+
+        //
+        imageListView.setVisibility(View.INVISIBLE);
     }
+
+    // 아이템 터치 이벤트
+    private AdapterView.OnItemClickListener onClickImageListItem = new AdapterView.OnItemClickListener() {
+
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+            // 이벤트 발생 시 해당 아이템 위치의 텍스트를 출력
+            Toast.makeText(getApplicationContext(), imageListAdapter.getItem(arg2), Toast.LENGTH_SHORT).show();
+        }
+    };
 }
