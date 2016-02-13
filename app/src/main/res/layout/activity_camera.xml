@@ -26,8 +26,15 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Capture"
-                android:id="@+id/btnCameraCapture"
+                android:text="Thumbnail"
+                android:id="@+id/btnCameraCaptureThumbnail"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fullsize"
+                android:id="@+id/btnCameraCaptureFullsize"
                 android:layout_gravity="center_horizontal" />
 
             <Button
@@ -55,8 +62,8 @@
 
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/ivCameraCaptured"
             android:layout_weight="0.81"
             android:layout_gravity="center" />

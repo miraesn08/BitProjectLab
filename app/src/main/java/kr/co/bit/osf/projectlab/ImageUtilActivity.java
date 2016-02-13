@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.List;
 
 public class ImageUtilActivity extends AppCompatActivity {
-    private static final String TAG = "ImageUtilActivity";
+    private static final String TAG = "ImageUtilActivityLog";
 
     private ListView imageListView;
     private AlbumItemAdapter imageListAdapter;
@@ -121,31 +121,29 @@ public class ImageUtilActivity extends AppCompatActivity {
                         AlbumItemDTO dto = new AlbumItemDTO(0,0,imageFile.getName(),imageFile.getAbsolutePath(),0);
                         imageListAdapter.add(dto);
                     } while (cur.moveToNext());
-
-                    //
-                    imageListView.setVisibility(View.VISIBLE);
                 }
+                imageListView.setVisibility(View.VISIBLE);
             }
         });
 
         (findViewById(R.id.btnGetAlbumList)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageListAdapter.clear();
                 List<File> albumList = ImageUtil.getImageListFromDefaultAlbum(getApplicationContext());
                 if (albumList.size() > 0) {
                     for(File item : albumList) {
                         Log.i(TAG, "album image : " + item.getName());
                     }
                     //
-                    imageListAdapter.clear();
                     for(File item : albumList) {
                         AlbumItemDTO dto = new AlbumItemDTO(0,0,item.getName(),item.getAbsolutePath(),0);
                         imageListAdapter.add(dto);
                     }
-                    imageListView.setVisibility(View.VISIBLE);
                 } else {
                     Log.i(TAG, "there is no image in album.");
                 }
+                imageListView.setVisibility(View.VISIBLE);
             }
         });
 

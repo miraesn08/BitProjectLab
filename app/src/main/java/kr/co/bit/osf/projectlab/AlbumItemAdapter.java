@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.List;
 // http://ankyu.entersoft.kr/Lecture/android/listview_02.asp
 // http://itmir.tistory.com/477
 public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListener {
-    private static final String TAG = "AlbumItemAdapter";
+    private static final String TAG = "AlbumItemAdapterLog";
 
     private Activity activity = null;
     private Context context = null;
@@ -189,8 +188,7 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
         switch (v.getId()) {
             case R.id.AlbumItemPreviewButton:
             case R.id.AlbumEvenItemPreviewButton:
-                Toast.makeText(context, clickedItem.getImageUrl(),
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, clickedItem.getImageUrl(), Toast.LENGTH_SHORT).show();
                 //
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
