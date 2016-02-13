@@ -2,10 +2,13 @@ package kr.co.bit.osf.projectlab;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -14,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ImageUtil {
-    private static final String TAG = "ImageUtil";
+    private static final String TAG = "ImageUtilLog";
 
     public static final String ALBUM_NAME = "FlashCard";
 
@@ -127,5 +130,47 @@ public class ImageUtil {
         }
 
         return imageList;
+    }
+
+    public static void showImageFileInImageView(String imageFilePath, ImageView imageView) {
+        String tagPrefix = "thumbnail : ";
+        // http://developer.android.com/intl/ko/training/camera/photobasics.html
+        /* Get the size of the ImageView */
+        int targetW = imageView.getWidth();
+        int targetH = imageView.getHeight();
+        Log.i(TAG, tagPrefix + "Get the size of the ImageView");
+        Log.i(TAG, tagPrefix + "targetWidth : " + targetW);
+        Log.i(TAG, tagPrefix + "targetHeight : " + targetH);
+
+        /* Get the size of the image */
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imageFilePath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+        Log.i(TAG, tagPrefix + "Get the size of the image");
+        Log.i(TAG, tagPrefix + photoW);
+        Log.i(TAG, tagPrefix + photoH);
+
+		/* Figure out which way needs to be reduced less */
+        int scaleFactor = 1;
+        if ((targetW > 0) || (targetH > 0)) {
+            scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+        }
+        Log.i(TAG, tagPrefix + "scaleFactor : " + scaleFactor);
+
+		/* Set bitmap options to scale the image decode target */
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+        Log.i(TAG, tagPrefix + "Set bitmap options to scale the image decode target");
+
+		/* Decode the JPEG file into a Bitmap */
+        Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath, bmOptions);
+        Log.i(TAG, tagPrefix + "Decode the JPEG file into a Bitmap");
+
+		/* Associate the Bitmap to the ImageView */
+        imageView.setImageBitmap(bitmap);
+        Log.i(TAG, tagPrefix + "Associate the Bitmap to the ImageView");
     }
 }
