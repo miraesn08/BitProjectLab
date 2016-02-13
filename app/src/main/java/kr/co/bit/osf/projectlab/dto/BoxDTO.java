@@ -4,11 +4,20 @@ public class BoxDTO {
     private int id;
     private String name;
     private int type;           // 0:user box, 1:demo box
-    int order;
+    int seq;
     int position;               // for Adapter
+
+    public BoxDTO() { }
 
     public BoxDTO(String name) {
         this.name = name;
+    }
+
+    public BoxDTO(int id, String name, int type, int seq) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.seq = seq;
     }
 
     public int getId() {
@@ -35,12 +44,12 @@ public class BoxDTO {
         this.type = type;
     }
 
-    public int getOrder() {
-        return order;
+    public int getSeq() {
+        return seq;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setSeq(int seq) {
+        this.seq = seq;
     }
 
     public int getPosition() {
@@ -58,8 +67,6 @@ public class BoxDTO {
 
         BoxDTO that = (BoxDTO) o;
 
-        if (id != that.id) return false;
-        if (type != that.type) return false;
         return name.equals(that.name);
 
     }
@@ -78,7 +85,7 @@ public class BoxDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type=" + type +
-                ", order=" + order +
+                ", seq=" + seq +
                 '}';
     }
 }

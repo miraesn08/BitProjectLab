@@ -5,9 +5,11 @@ public class CardDTO {
     private String name;
     private String imagePath;   // image full path
     private int type;           // 0:user card, 1:demo card
-    int order;
+    int seq;
     int boxId;                  // CardBox id
     int position;               // for Adapter
+
+    public CardDTO() { }
 
     public CardDTO(String name, String imagePath, int boxId) {
         this.name = name;
@@ -47,12 +49,12 @@ public class CardDTO {
         this.type = type;
     }
 
-    public int getOrder() {
-        return order;
+    public int getSeq() {
+        return seq;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setSeq(int order) {
+        this.seq = order;
     }
 
     public int getBoxId() {
@@ -78,7 +80,6 @@ public class CardDTO {
 
         CardDTO that = (CardDTO) o;
 
-        if (id != that.id) return false;
         if (type != that.type) return false;
         if (boxId != that.boxId) return false;
         if (!name.equals(that.name)) return false;
@@ -103,7 +104,7 @@ public class CardDTO {
                 ", name='" + name + '\'' +
                 ", imagePath='" + imagePath + '\'' +
                 ", type=" + type +
-                ", order=" + order +
+                ", seq=" + seq +
                 ", boxId=" + boxId +
                 ", position=" + position +
                 '}';
