@@ -88,50 +88,6 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
             deleteButton = (Button) rowView.findViewById(R.id.AlbumItemDeleteButton);
         }
 
-/*
-        // 리스트가 길어지면서 현재 화면에 보이지 않는 아이템은 converView가 null인 상태로 들어 옴
-        if ( convertView == null ) {
-            // 리스트 아이템이 새로 추가될 경우에는 v가 null값이다.
-            // view는 어느 정도 생성된 뒤에는 재사용이 일어나기 때문에 효율을 위해서 해준다.
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.activity_image_util_album_item, parent, false);
-
-            // 레이아웃이 메모리에 올라왔기 때문에 이를 이용하여 포함된 뷰들을 참조할 수 있습니다.
-            itemImageView = (ImageView) convertView.findViewById(R.id.AlbumItemImageView);
-            itemTextView = (TextView) convertView.findViewById(R.id.AlbumItemText);
-            itemButton = (Button) convertView.findViewById(R.id.AlbumItemPreviewButton);
-
-            // 버튼을 터치 했을 때 이벤트 발생
-            Button btn = (Button) convertView.findViewById(R.id.AlbumItemPreviewButton);
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 터치 시 해당 아이템 이름 출력
-                    Toast.makeText(context, list.get(pos).getImageUrl(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // 리스트 아이템을 터치 했을 때 이벤트 발생
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 터치 시 해당 아이템 이름 출력
-                    Toast.makeText(context, "list clicked : " + list.get(pos).getText(), Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // 리스트 아이템을 길게 터치 했을 떄 이벤트 발생
-            convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    // 터치 시 해당 아이템 이름 출력
-                    Toast.makeText(context, "list long clicked  : " + list.get(pos).toString(), Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-            });
-        }
-*/
-
         // 받아온 position 값을 이용하여 배열에서 아이템을 가져온다.
         dto = (AlbumItemDTO)getItem(position);
         dto.setPosition(position);
@@ -159,11 +115,6 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
         dataChange();
     }
 
-    public void refreshItems(List<AlbumItemDTO> dtoList) {
-        this.list.clear();
-        this.list.addAll(dtoList);
-        dataChange();
-    }
     // 외부에서 아이템 삭제 요청 시 사용
     public void remove(int position) {
         this.list.remove(position);
@@ -201,6 +152,7 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
             case R.id.AlbumEvenItemDeleteButton:
                 //Log.i(TAG, "delete : " + clickedItem.getPosition());
                 final int itemPosition = clickedItem.getPosition();
+                // http://www.vogella.com/tutorials/AndroidListView/article.html
                 view.animate().setDuration(2000).alpha(0)
                         .withEndAction(new Runnable() {
                             @Override

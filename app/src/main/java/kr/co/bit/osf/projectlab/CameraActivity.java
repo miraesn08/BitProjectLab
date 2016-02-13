@@ -37,7 +37,6 @@ public class CameraActivity extends AppCompatActivity {
     static final int MEDIA_TYPE_VIDEO = 2;
 
     Button btnCaptureThumbnail = null;
-    Button btnCapture2 = null;
     Button btnChoose = null;
     Button btnEnvironment = null;
     ImageView ivCaptured = null;
@@ -47,14 +46,12 @@ public class CameraActivity extends AppCompatActivity {
     int initialWidth = 0;
     int initialHeight = 0;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
         btnCaptureThumbnail = (Button) findViewById(R.id.btnCameraCaptureThumbnail);
-        btnCapture2 = (Button) findViewById(R.id.btnCameraCapture2);
         btnChoose = (Button) findViewById(R.id.btnChooseImage);
         btnEnvironment = (Button) findViewById(R.id.btnShowEnvironment);
         ivCaptured = (ImageView) findViewById(R.id.ivCameraCaptured);
@@ -98,7 +95,7 @@ public class CameraActivity extends AppCompatActivity {
         Note: Files you save in the directories provided by getExternalFilesDir() are deleted
             when the user uninstalls your app.
 */
-        ((Button) findViewById(R.id.btnCameraCaptureFullsize)).setOnClickListener(new View.OnClickListener() {
+        (findViewById(R.id.btnCameraCaptureFullsize)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -122,25 +119,6 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
 
-        btnCapture2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG, "btnCameraCapture2 clicked");
-                // http://developer.android.com/intl/ko/guide/topics/media/camera.html
-                // create Intent to take a picture and return control to the calling application
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                Log.i(TAG, "new camera2Intent");
-
-                fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
-                Log.i(TAG, "fileUri:" + fileUri);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
-
-                // start the image capture Intent
-                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                Log.i(TAG, "start camera2Intent");
-            }
-        });
-
         btnChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +137,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.i(TAG, "Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES):"
-                    + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
+                        + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
                 Log.i(TAG, "Context.getExternalFilesDir(Environment.DIRECTORY_PICTURES):"
                         + getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES));
             }
@@ -206,32 +184,6 @@ public class CameraActivity extends AppCompatActivity {
                     }
                     Log.i(TAG, "captured full-size image");
                     break;
-
-/*
-                    Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                    thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                    String fileName = System.currentTimeMillis() + ".jpg";
-                    // Bitmap resized = Bitmap.createScaledBitmap(thumbnail, 800, 150, true);
-                    //File destination = new File(Environment.getExternalStorageDirectory(), fileName);
-                    //Log.i(TAG, "getExternalStorageDirectory=" + Environment.getExternalStorageDirectory());
-                    File destination = new File(getExternalFilesDir(null), fileName);
-                    //String fileName="/dcim/camera/"+ System.currentTimeMillis() + ".jpg";
-                    //File destination = new File(Environment.getExternalStorageDirectory(), fileName);
-                    Log.i(TAG, "image destination=" + destination);
-                    FileOutputStream fo;
-                    try {
-                        destination.createNewFile();
-                        fo = new FileOutputStream(destination);
-                        fo.write(bytes.toByteArray());
-                        fo.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    ivCaptured.setImageBitmap(thumbnail);
-*/
 
                 case REQ_CODE_SELECT_PICTURE:
                     Uri selectedImageUri = data.getData();
@@ -281,13 +233,12 @@ public class CameraActivity extends AppCompatActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
     private void setPic() {
-        String picPath = mCurrentPhotoPath.replace("file:", "");
-        Log.i(TAG, "captured full-size image : picPath : " + picPath);
+        Log.i(TAG, "captured full-size image : mCurrentPhotoPath : " + mCurrentPhotoPath);
 		/* There isn't enough memory to open up more than a couple camera photos */
 		/* So pre-scale the target bitmap into which the file is decoded */
 
@@ -305,7 +256,7 @@ public class CameraActivity extends AppCompatActivity {
 		/* Get the size of the image */
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picPath, bmOptions);
+        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
         Log.i(TAG, "captured full-size image : Get the size of the image");
@@ -326,7 +277,7 @@ public class CameraActivity extends AppCompatActivity {
         Log.i(TAG, "captured full-size image : Set bitmap options to scale the image decode target");
 
 		/* Decode the JPEG file into a Bitmap */
-        Bitmap bitmap = BitmapFactory.decodeFile(picPath, bmOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         Log.i(TAG, "captured full-size image : Decode the JPEG file into a Bitmap");
 
 		/* Associate the Bitmap to the ImageView */
@@ -336,12 +287,11 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     private void galleryAddPic() {
-        String picPath = mCurrentPhotoPath.replace("file:", "");
-        Log.i(TAG, "captured full-size image : picPath : " + picPath);
+        Log.i(TAG, "captured full-size image : mCurrentPhotoPath : " + mCurrentPhotoPath);
         //
         Intent mediaScanIntent = new Intent("android.intent.action.MEDIA_SCANNER_SCAN_FILE");
         Log.i(TAG, "captured full-size image : android.intent.action.MEDIA_SCANNER_SCAN_FILE");
-        File f = new File(picPath);
+        File f = new File(mCurrentPhotoPath);
         Log.i(TAG, "captured full-size image : new File(mCurrentPhotoPath)");
         Log.i(TAG, "captured full-size image : f : " + f.getAbsolutePath());
         Uri contentUri = Uri.fromFile(f);
@@ -350,51 +300,6 @@ public class CameraActivity extends AppCompatActivity {
         Log.i(TAG, "captured full-size image : mediaScanIntent.setData(contentUri)");
         this.sendBroadcast(mediaScanIntent);
         Log.i(TAG, "captured full-size image : this.sendBroadcast(mediaScanIntent);");
-    }
-
-    /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
-        Log.i(TAG, "getOutputMediaFileUri(" + type + ")");
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
-        Log.i(TAG, "getOutputMediaFile(" + type + ")");
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        //File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-        //        Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "");
-        Log.i(TAG, "mediaStorageDir:" + mediaStorageDir);
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            if (! mediaStorageDir.mkdirs()){
-                Log.i(TAG, "failed to create directory:" + mediaStorageDir);
-                Log.d("MyCameraApp", "failed to create directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "IMG_"+ timeStamp + ".jpg");
-        } else if(type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-                    "VID_"+ timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
     }
 
     @Override

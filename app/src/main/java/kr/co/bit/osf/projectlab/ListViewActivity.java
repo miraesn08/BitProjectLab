@@ -61,7 +61,6 @@ public class ListViewActivity extends AppCompatActivity {
 
     }
 
-
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();

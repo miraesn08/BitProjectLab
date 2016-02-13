@@ -40,13 +40,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Capture2"
-                android:id="@+id/btnCameraCapture2"
-                android:layout_gravity="center_horizontal" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Choose"
                 android:id="@+id/btnChooseImage"
                 android:layout_gravity="center_horizontal" />
