@@ -21,12 +21,6 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MediaFileUri"
-            android:id="@+id/btnGetOutputMediaFileUri" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Image List"
             android:id="@+id/btnGetImageList" />
 
@@ -35,6 +29,12 @@
             android:layout_height="wrap_content"
             android:text="Album List"
             android:id="@+id/btnGetAlbumList" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="File Uri"
+            android:id="@+id/btnGetOutputMediaFileUri" />
     </LinearLayout>
 
     <LinearLayout

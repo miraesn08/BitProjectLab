@@ -3,7 +3,10 @@ package kr.co.bit.osf.projectlab;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +105,48 @@ public class AlbumItemAdapter extends BaseAdapter  implements View.OnClickListen
             itemTextView.setText(dto.getText());
             previewButton.setOnClickListener(this);
             deleteButton.setOnClickListener(this);
+
+            // thumbnail
+            String tagLog = "thumbnail : ";
+            String photoPath = dto.getImageUrl();
+            // http://developer.android.com/intl/ko/training/camera/photobasics.html
+		    /* Get the size of the ImageView */
+            int targetW = itemImageView.getWidth();
+            int targetH = itemImageView.getHeight();
+            Log.i(TAG, tagLog + "Get the size of the ImageView");
+            Log.i(TAG, tagLog + "targetWidth : " + targetW);
+            Log.i(TAG, tagLog + "targetHeight : " + targetH);
+
+		    /* Get the size of the image */
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(photoPath, bmOptions);
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+            Log.i(TAG, tagLog + "Get the size of the image");
+            Log.i(TAG, tagLog + photoW);
+            Log.i(TAG, tagLog + photoH);
+
+		    /* Figure out which way needs to be reduced less */
+            int scaleFactor = 1;
+            if ((targetW > 0) || (targetH > 0)) {
+                scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+            }
+            Log.i(TAG, tagLog + "scaleFactor : " + scaleFactor);
+
+		    /* Set bitmap options to scale the image decode target */
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+            Log.i(TAG, tagLog + "Set bitmap options to scale the image decode target");
+
+		    /* Decode the JPEG file into a Bitmap */
+            Bitmap bitmap = BitmapFactory.decodeFile(photoPath, bmOptions);
+            Log.i(TAG, tagLog + "Decode the JPEG file into a Bitmap");
+
+		    /* Associate the Bitmap to the ImageView */
+            itemImageView.setImageBitmap(bitmap);
+            Log.i(TAG, tagLog + "Associate the Bitmap to the ImageView");
         }
 
         // 완성된 아이템 뷰를 반환합니다.

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -51,9 +52,13 @@ public class ImageUtilActivity extends AppCompatActivity {
                 Log.i(TAG, "btnGetOutputMediaFileUri clicked");
                 File outputName = ImageUtil.getOutputMediaFile(ImageUtil.MEDIA_TYPE_IMAGE);
                 if (outputName != null) {
+                    String msgText = "getName():" + outputName.getName() + "\n"
+                            + "getAbsolutePath():" + outputName.getAbsolutePath();
+                    Toast.makeText(getApplicationContext(), msgText, Toast.LENGTH_LONG).show();
                     Log.i(TAG, outputName.getName());
                     Log.i(TAG, outputName.getAbsolutePath());
                 } else {
+                    Toast.makeText(getApplicationContext(), "no name!", Toast.LENGTH_LONG).show();
                     Log.i(TAG, "no name!");
                 }
             }
