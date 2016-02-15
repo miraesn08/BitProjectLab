@@ -22,6 +22,11 @@ public class CardDTO {
         this.type = type;
     }
 
+    public CardDTO(long id, String name, String imagePath, int type, int boxId) {
+        this(name, imagePath, type, boxId);
+        this.id = id;
+    }
+
     public long getId() {
         return id;
     }
