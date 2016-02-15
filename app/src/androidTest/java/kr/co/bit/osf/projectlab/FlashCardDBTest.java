@@ -5,13 +5,25 @@ import android.test.RenamingDelegatingContext;
 
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
 import kr.co.bit.osf.projectlab.dto.BoxDTO;
+import kr.co.bit.osf.projectlab.dto.CardDTO;
 
 // http://stackoverflow.com/questions/8499554/android-junit-test-for-sqliteopenhelper
 public class FlashCardDBTest extends AndroidTestCase {
     private FlashCardDB db;
 
     // box test data list
-    BoxDTO[] boxList = { new BoxDTO(1, "dog", 1, 1), new BoxDTO(2, "cat", 2, 2), new BoxDTO(3, "rabbit", 3, 3) };
+    BoxDTO[] boxList = {
+            new BoxDTO(1, "animal", 1, 1),
+            new BoxDTO(2, "food", 2, 2),
+            new BoxDTO(3, "playground", 3, 3)
+    };
+
+    // card test data list
+    CardDTO[] cardList = {
+            new CardDTO("dog","dog", FlashCardDB.CardEntry.TYPE_DEMO, 1),
+            new CardDTO("cat", "cat", FlashCardDB.CardEntry.TYPE_DEMO, 1),
+            new CardDTO("rabbit", "rabbit", FlashCardDB.CardEntry.TYPE_DEMO, 1)
+    };
 
     @Override
     public void setUp() throws Exception {
@@ -89,9 +101,25 @@ public class FlashCardDBTest extends AndroidTestCase {
         assertEquals(true, (newValue.getSeq() == updatedValue.getSeq()));
     }
 
-    // Fake failed test
-    public void testSomething()  {
-        //assertEquals(false, true);
+    // card
+    public void testAddCard() throws Exception {
+        int addIndex = 2;
+        CardDTO card = db.addCard(cardList[addIndex]);
+
+        assertEquals(true, (card.getId() > 0));
+        assertEquals(true, cardList[addIndex].equals(card));
     }
 
+    public void testGetCardById() throws Exception {
+        for(int i = 0; i < cardList.length; i++) {
+            db.addCard(cardList[i]);
+        }
+        int findIndex = 2;
+
+        CardDTO card = db.getCard(findIndex+1);
+
+        assertEquals(true, (card != null));
+        assertEquals(true, (card.getId() == findIndex+1));
+        assertEquals(true, (cardList[findIndex].equals(card)));
+    }
 }
