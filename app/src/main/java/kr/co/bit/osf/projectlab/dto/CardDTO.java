@@ -17,6 +17,11 @@ public class CardDTO {
         this.boxId = boxId;
     }
 
+    public CardDTO(String name, String imagePath, int type, int boxId) {
+        this(name, imagePath, boxId);
+        this.type = type;
+    }
+
     public long getId() {
         return id;
     }

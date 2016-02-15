@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import kr.co.bit.osf.projectlab.dto.BoxDTO;
+import kr.co.bit.osf.projectlab.dto.CardDTO;
 
 // http://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
 public class FlashCardDB extends SQLiteOpenHelper {
@@ -28,6 +29,10 @@ public class FlashCardDB extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_SEQ = "seq";
+
+        // type
+        public static final int TYPE_USER = 0;
+        public static final int TYPE_DEMO = 1;
 
         // table create statement
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME
@@ -56,6 +61,10 @@ public class FlashCardDB extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_TYPE = "type";
         public static final String COLUMN_NAME_SEQ = "seq";
         public static final String COLUMN_NAME_BOX_ID = "box_id";
+
+        // type
+        public static final int TYPE_USER = 0;
+        public static final int TYPE_DEMO = 1;
 
         // table create statement
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME
@@ -103,6 +112,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // box
     public BoxDTO addBox(String name){
         ContentValues values = new ContentValues();
         values.put(BoxEntry.COLUMN_NAME_NAME, name);
@@ -110,7 +120,6 @@ public class FlashCardDB extends SQLiteOpenHelper {
         values.put(BoxEntry.COLUMN_NAME_SEQ, 0);
 
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.insert(BoxEntry.TABLE_NAME, null, values);
         db.close();
 
@@ -153,7 +162,6 @@ public class FlashCardDB extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             box = new BoxDTO();
-            cursor.moveToFirst();
             box.setId(Integer.parseInt(cursor.getString(0)));
             box.setName(cursor.getString(1));
             box.setType(Integer.parseInt(cursor.getString(2)));
@@ -175,8 +183,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // http://developer.android.com/intl/ko/training/basics/data-storage/databases.html#WriteDbRow
-        long newRowId;
-        newRowId = db.insert(BoxEntry.TABLE_NAME, null, values);
+        long newRowId = db.insert(BoxEntry.TABLE_NAME, null, values);
         box.setId(newRowId);
         db.close();
 
@@ -220,6 +227,49 @@ public class FlashCardDB extends SQLiteOpenHelper {
         db.close();
 
         return (count > 0);
+    }
+
+    // card
+    public CardDTO addCard(CardDTO card){
+        ContentValues values = new ContentValues();
+        values.put(CardEntry.COLUMN_NAME_NAME, card.getName());
+        values.put(CardEntry.COLUMN_NAME_IMAGE_PATH, card.getImagePath());
+        values.put(CardEntry.COLUMN_NAME_TYPE, card.getType());
+        values.put(CardEntry.COLUMN_NAME_SEQ, card.getSeq());
+        values.put(CardEntry.COLUMN_NAME_BOX_ID, card.getBoxId());
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long newRowId = db.insert(CardEntry.TABLE_NAME, null, values);
+        card.setId(newRowId);
+        db.close();
+
+        return card;
+    }
+
+    public CardDTO getCard(int id) {
+        CardDTO card = null;
+
+        String query = "select " + CardEntry.FIELD_LIST
+                + " from " + CardEntry.TABLE_NAME
+                + " where " + CardEntry.COLUMN_NAME_ID + " = " + id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            card = new CardDTO();
+            card.setId(Integer.parseInt(cursor.getString(0)));
+            card.setName(cursor.getString(1));
+            card.setImagePath(cursor.getString(2));
+            card.setType(Integer.parseInt(cursor.getString(3)));
+            card.setSeq(Integer.parseInt(cursor.getString(4)));
+            card.setBoxId(Integer.parseInt(cursor.getString(5)));
+            cursor.close();
+        }
+
+        db.close();
+
+        return card;
     }
 
 }
