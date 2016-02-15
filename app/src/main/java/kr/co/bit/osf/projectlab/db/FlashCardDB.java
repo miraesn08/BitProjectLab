@@ -17,6 +17,9 @@ import kr.co.bit.osf.projectlab.dto.CardDTO;
 public class FlashCardDB extends SQLiteOpenHelper {
     private static final String TAG = "FlashCardDBLog";
 
+    // context
+    Context context = null;
+
     // database version & name
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "flashCard.db";
@@ -105,11 +108,13 @@ public class FlashCardDB extends SQLiteOpenHelper {
 
     public FlashCardDB(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     public FlashCardDB(Context context, String name,
                        SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        this.context = context;
     }
 
     @Override
@@ -195,7 +200,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return box;
     }
 
-    public BoxDTO addBox(BoxDTO box){
+    public boolean addBox(BoxDTO box){
         ContentValues values = new ContentValues();
         values.put(BoxEntry.COLUMN_NAME_NAME, box.getName());
         values.put(BoxEntry.COLUMN_NAME_TYPE, box.getType());
@@ -208,7 +213,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         box.setId(newRowId);
         db.close();
 
-        return box;
+        return (newRowId > 0);
     }
 
     public boolean deleteBox(int id) {
@@ -251,7 +256,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
     }
 
     // card
-    public CardDTO addCard(CardDTO card){
+    public boolean addCard(CardDTO card){
         ContentValues values = new ContentValues();
         values.put(CardEntry.COLUMN_NAME_NAME, card.getName());
         values.put(CardEntry.COLUMN_NAME_IMAGE_PATH, card.getImagePath());
@@ -264,7 +269,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         card.setId(newRowId);
         db.close();
 
-        return card;
+        return (newRowId > 0);
     }
 
     public CardDTO getCard(int id) {
@@ -298,7 +303,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
     public boolean deleteCard(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = CardEntry.COLUMN_NAME_ENTRY_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id) };
+        String[] selectionArgs = { String.valueOf(id)};
         int count = db.delete(CardEntry.TABLE_NAME, selection, selectionArgs);
         db.close();
 
