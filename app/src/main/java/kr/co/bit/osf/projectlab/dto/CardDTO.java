@@ -1,7 +1,7 @@
 package kr.co.bit.osf.projectlab.dto;
 
 public class CardDTO {
-    private int id;
+    private long id;
     private String name;
     private String imagePath;   // image full path
     private int type;           // 0:user card, 1:demo card
@@ -17,11 +17,11 @@ public class CardDTO {
         this.boxId = boxId;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -89,7 +89,7 @@ public class CardDTO {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = (int) (id ^ (id >>> 32));
         result = 31 * result + name.hashCode();
         result = 31 * result + imagePath.hashCode();
         result = 31 * result + type;
