@@ -41,38 +41,41 @@ public class FlashCardDB extends SQLiteOpenHelper {
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
         // field list
-        public static String FIELD_LIST_BOX =  COLUMN_NAME_ID
+        public static String FIELD_LIST =  COLUMN_NAME_ID
                 + "," + COLUMN_NAME_NAME + "," + COLUMN_NAME_TYPE + "," + COLUMN_NAME_SEQ;
     }
 
-    // table name
-    private static final String TABLE_CARD = "card";
+    public static abstract class CardEntry implements BaseColumns {
+        // table name
+        public static final String TABLE_NAME = "card";
 
-    // CARD table column
-    private static final String COLUMN_CARD_ID = "id";
-    private static final String COLUMN_CARD_NAME = "name";
-    private static final String COLUMN_CARD_IMAGE_PATH = "image_path";
-    private static final String COLUMN_CARD_TYPE = "type";
-    private static final String COLUMN_CARD_SEQ = "seq";
-    private static final String COLUMN_CARD_BOX_ID = "box_id";
+        // column name
+        public static final String COLUMN_NAME_ID = "id";
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_IMAGE_PATH = "image_path";
+        public static final String COLUMN_NAME_TYPE = "type";
+        public static final String COLUMN_NAME_SEQ = "seq";
+        public static final String COLUMN_NAME_BOX_ID = "box_id";
 
-    // table create statements
+        // table create statement
+        public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME
+                + "(" + COLUMN_NAME_ID + " INTEGER PRIMARY KEY"
+                + "," + COLUMN_NAME_NAME + " TEXT"
+                + "," + COLUMN_NAME_IMAGE_PATH + " TEXT"
+                + "," + COLUMN_NAME_TYPE + " INTEGER"
+                + "," + COLUMN_NAME_SEQ + " INTEGER"
+                + "," + COLUMN_NAME_BOX_ID + " INTEGER"
+                + ")";
 
-    // CARD table create statement
-    private static final String CREATE_TABLE_CARD = "CREATE TABLE " + TABLE_CARD
-            + "(" + COLUMN_CARD_ID + " INTEGER PRIMARY KEY"
-            + "," + COLUMN_CARD_NAME + " TEXT"
-            + "," + COLUMN_CARD_IMAGE_PATH + " TEXT"
-            + "," + COLUMN_CARD_TYPE + " INTEGER"
-            + "," + COLUMN_CARD_SEQ + " INTEGER"
-            + "," + COLUMN_CARD_BOX_ID + " INTEGER"
-            + ")";
+        // table drop statement
+        public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    // CARD table field list
-    private static final String FIELD_LIST_CARD = COLUMN_CARD_ID
-            + "," + COLUMN_CARD_NAME + "," + COLUMN_CARD_IMAGE_PATH
-            + "," + COLUMN_CARD_TYPE + "," + COLUMN_CARD_SEQ + "," + COLUMN_CARD_BOX_ID;
-
+        // field list
+        public static String FIELD_LIST =  COLUMN_NAME_ID
+                + "," + COLUMN_NAME_NAME+ "," + COLUMN_NAME_IMAGE_PATH
+                + "," + COLUMN_NAME_TYPE + "," + COLUMN_NAME_SEQ
+                + "," + COLUMN_NAME_BOX_ID;
+    }
 
     public FlashCardDB(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -87,14 +90,14 @@ public class FlashCardDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
         db.execSQL(BoxEntry.CREATE_TABLE);
-        db.execSQL(CREATE_TABLE_CARD);
+        db.execSQL(CardEntry.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // on upgrade drop older tables
         db.execSQL(BoxEntry.DROP_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CARD);
+        db.execSQL(CardEntry.DROP_TABLE);
 
         // create new tables
         onCreate(db);
@@ -117,7 +120,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
     public BoxDTO getBox(String name) {
         BoxDTO box = null;
 
-        String query = "select " + BoxEntry.FIELD_LIST_BOX
+        String query = "select " + BoxEntry.FIELD_LIST
                 + " from " + BoxEntry.TABLE_NAME
                 + " where " + BoxEntry.COLUMN_NAME_NAME + " = \"" + name + "\"";
 
@@ -141,7 +144,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
     public BoxDTO getBox(int id) {
         BoxDTO box = null;
 
-        String query = "select " + BoxEntry.FIELD_LIST_BOX
+        String query = "select " + BoxEntry.FIELD_LIST
                 + " from " + BoxEntry.TABLE_NAME
                 + " where " + BoxEntry.COLUMN_NAME_ID + " = " + id;
 
