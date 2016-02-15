@@ -1,7 +1,7 @@
 package kr.co.bit.osf.projectlab.dto;
 
 public class BoxDTO {
-    private int id;
+    private long id;
     private String name;
     private int type;           // 0:user box, 1:demo box
     int seq;
@@ -20,11 +20,11 @@ public class BoxDTO {
         this.seq = seq;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -73,7 +73,7 @@ public class BoxDTO {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = (int) (id ^ (id >>> 32));
         result = 31 * result + name.hashCode();
         result = 31 * result + type;
         return result;
