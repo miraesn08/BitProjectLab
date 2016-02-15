@@ -92,7 +92,7 @@ public class FlashCardDBTest extends AndroidTestCase {
         BoxDTO box = db.getBox(boxDataList[findIndex].getName());
 
         assertNotNull(box);
-        assertEquals(true, (box.getId() == findIndex+1));
+        assertEquals(true, (box.getId() == findIndex + 1));
         assertEquals(true, (box.getType() == boxDataList[findIndex].getType()));
         assertEquals(true, (box.getName().equals(boxDataList[findIndex].getName())));
 
@@ -196,6 +196,27 @@ public class FlashCardDBTest extends AndroidTestCase {
 
         list = db.getCardByBoxId(9999);
         assertEquals(true, (list.size() == 0));
+    }
+
+    // demo data
+    public void testCreateBoxDemoData() throws Exception {
+        assertEquals(true, db.createBoxDemoData());
+        //assertEquals(true, "동물".equals(context.getString(R.string.box_demo_data_name)));
+        //assertEquals(true, "동물".equals(db.getBox(1).getName()));
+        BoxDTO box = db.getBox(1);
+        assertEquals(true, context.getString(R.string.box_demo_data_name).equals(box.getName()));
+        assertEquals(true, (box.getType() == FlashCardDB.BoxEntry.TYPE_DEMO));
+        assertEquals(true, (box.getSeq() == 1));
+    }
+
+    public void testCreateCardDemoData() throws Exception {
+        assertEquals(true, db.createCardDemoData());
+
+        CardDTO card = db.getCard(3);
+        assertEquals(true, context.getString(R.string.card_demo_data3_name).equals(card.getName()));
+        assertEquals(true, context.getString(R.string.card_demo_data3_image_name).equals(card.getImagePath()));
+        assertEquals(true, (card.getType() == FlashCardDB.CardEntry.TYPE_DEMO));
+        assertEquals(true, (card.getBoxId() == 1));
     }
 
 }

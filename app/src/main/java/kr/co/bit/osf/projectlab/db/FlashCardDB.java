@@ -10,6 +10,7 @@ import android.provider.BaseColumns;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.co.bit.osf.projectlab.R;
 import kr.co.bit.osf.projectlab.dto.BoxDTO;
 import kr.co.bit.osf.projectlab.dto.CardDTO;
 
@@ -362,4 +363,32 @@ public class FlashCardDB extends SQLiteOpenHelper {
 
         return list;
     }
+
+    // demo data
+    public boolean createBoxDemoData() {
+        BoxDTO demoBox = new BoxDTO(0,
+                context.getString(R.string.box_demo_data_name),
+                BoxEntry.TYPE_DEMO,
+                1);
+        return addBox(demoBox);
+    }
+    public boolean createCardDemoData() {
+        CardDTO[] demoList = {
+                new CardDTO(0,
+                        context.getString(R.string.card_demo_data1_name),
+                        context.getString(R.string.card_demo_data1_image_name),
+                        CardEntry.TYPE_DEMO, 1),
+                new CardDTO(0,
+                        context.getString(R.string.card_demo_data2_name),
+                        context.getString(R.string.card_demo_data2_image_name),
+                        CardEntry.TYPE_DEMO, 1),
+                new CardDTO(0,
+                        context.getString(R.string.card_demo_data3_name),
+                        context.getString(R.string.card_demo_data3_image_name),
+                        CardEntry.TYPE_DEMO, 1)
+        };
+
+        return (addCard(demoList[0]) && addCard(demoList[1]) && addCard(demoList[2]));
+    }
+
 }
