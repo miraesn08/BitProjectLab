@@ -63,6 +63,32 @@ public class FlashCardDBTest extends AndroidTestCase {
         assertEquals(true, (box.getName().equals(boxList[findIndex].getName())));
     }
 
+    public void testDeleteBox() throws Exception {
+        for(int i = 0; i < boxList.length; i++) {
+            db.addBox(boxList[i]);
+        }
+        int deleteId = 2;
+
+        assertEquals(true, (db.deleteBox(deleteId)));
+        assertEquals(true, (db.getBox(deleteId) == null));
+    }
+
+    public void testUpdateBox() throws Exception {
+        for(int i = 0; i < boxList.length; i++) {
+            db.addBox(boxList[i]);
+        }
+        int updateId = 2;
+
+        BoxDTO newValue = new BoxDTO(updateId, "new value", updateId+1, updateId+2);
+        assertEquals(true, (db.updateBox(newValue)));
+
+        BoxDTO updatedValue = db.getBox(updateId);
+        assertEquals(true, (updatedValue != null));
+        assertEquals(true, (newValue.equals(updatedValue)));
+        assertEquals(true, (newValue.getType() == updatedValue.getType()));
+        assertEquals(true, (newValue.getSeq() == updatedValue.getSeq()));
+    }
+
     // Fake failed test
     public void testSomething()  {
         //assertEquals(false, true);
