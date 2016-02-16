@@ -24,7 +24,8 @@
             android:name=".CameraActivity"
             android:label="CameraLab" />
         <activity android:name=".ImageUtilActivity" />
-        <activity android:name=".ListViewActivity"></activity>
+        <activity android:name=".ListViewActivity" />
+        <activity android:name=".DemoViewActivity" />
     </application>
 
 </manifest>

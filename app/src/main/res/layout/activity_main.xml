@@ -37,5 +37,12 @@
             android:id="@+id/btnListView"
             android:layout_gravity="center_horizontal"
             android:text="List View" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDemoView"
+            android:layout_gravity="center_horizontal"
+            android:text="Demo View" />
     </LinearLayout>
 </RelativeLayout>

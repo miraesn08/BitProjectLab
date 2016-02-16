@@ -48,6 +48,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        (findViewById(R.id.btnDemoView)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "btnDemoView clicked");
+                Intent intent = new Intent(getApplicationContext(), DemoViewActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 }
