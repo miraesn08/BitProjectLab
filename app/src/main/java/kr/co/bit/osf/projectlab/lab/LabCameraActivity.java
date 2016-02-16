@@ -1,4 +1,4 @@
-package kr.co.bit.osf.projectlab;
+package kr.co.bit.osf.projectlab.lab;
 
 import android.Manifest;
 import android.content.CursorLoader;
@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CameraActivity extends AppCompatActivity {
+import kr.co.bit.osf.projectlab.R;
+
+public class LabCameraActivity extends AppCompatActivity {
 
     final static String TAG = "CameraActivityLog";
     final int REQ_CODE_CAPTURE_THUMBNAIL = 101;
@@ -49,7 +51,7 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_camera);
+        setContentView(R.layout.activity_lab_camera);
 
         btnCaptureThumbnail = (Button) findViewById(R.id.btnCameraCaptureThumbnail);
         btnChoose = (Button) findViewById(R.id.btnChooseImage);

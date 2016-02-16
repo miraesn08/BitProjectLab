@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.co.bit.osf.projectlab.R;
-import kr.co.bit.osf.projectlab.dto.BoxDTO;
-import kr.co.bit.osf.projectlab.dto.CardDTO;
 
 // http://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
 public class FlashCardDB extends SQLiteOpenHelper {

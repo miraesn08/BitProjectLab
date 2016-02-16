@@ -1,4 +1,4 @@
-package kr.co.bit.osf.projectlab.dto;
+package kr.co.bit.osf.projectlab.db;
 
 public class CardDTO {
     private long id;
@@ -6,8 +6,7 @@ public class CardDTO {
     private String imagePath;   // image full path
     private int type;           // 0:user card, 1:demo card
     int seq;
-    int boxId;                  // CardBox id
-    int position;               // for Adapter
+    int boxId;                  // Box id
 
     public CardDTO() { }
 
@@ -75,15 +74,7 @@ public class CardDTO {
         this.boxId = boxId;
     }
 
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    @Override
+   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -116,7 +107,6 @@ public class CardDTO {
                 ", type=" + type +
                 ", seq=" + seq +
                 ", boxId=" + boxId +
-                ", position=" + position +
                 '}';
     }
 }

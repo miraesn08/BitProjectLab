@@ -1,4 +1,4 @@
-package kr.co.bit.osf.projectlab;
+package kr.co.bit.osf.projectlab.lab;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,10 +16,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import kr.co.bit.osf.projectlab.R;
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
-import kr.co.bit.osf.projectlab.dto.CardDTO;
+import kr.co.bit.osf.projectlab.db.CardDTO;
 
-public class DemoViewActivity extends AppCompatActivity {
+public class LabDemoViewActivity extends AppCompatActivity {
     final static String TAG = "DemoViewActivityLog";
     ViewPager pager;
 
@@ -33,7 +34,7 @@ public class DemoViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_demo_view);
+        setContentView(R.layout.activity_lab_demo_view);
 
         // http://arabiannight.tistory.com/entry/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9CAndorid-Viewpager-%EC%82%AC%EC%9A%A9-%ED%95%98%EA%B8%B0
         pager = (ViewPager) findViewById(R.id.demoViewPager);
@@ -76,7 +77,7 @@ public class DemoViewActivity extends AppCompatActivity {
             //http://kitesoft.tistory.com/76
             //새로운 View 객체를 Layoutinflater를 이용해서 생성
             //만들어질 View의 설계는 res폴더>>layout폴더>>viewpater_childview.xml 레이아웃 파일 사용
-            view = inflater.inflate(R.layout.activity_demo_view_pager_child, null);
+            view = inflater.inflate(R.layout.activity_lab_demo_view_pager_child, null);
 
             //만들어진 View안에 있는 ImageView 객체 참조
             //위에서 inflated 되어 만들어진 view로부터 findViewById()를 해야 하는 것에 주의.

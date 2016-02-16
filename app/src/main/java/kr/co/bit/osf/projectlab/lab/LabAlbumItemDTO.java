@@ -1,6 +1,6 @@
-package kr.co.bit.osf.projectlab;
+package kr.co.bit.osf.projectlab.lab;
 
-public class AlbumItemDTO {
+public class LabAlbumItemDTO {
     private int id;
     private int type;
     private String text;
@@ -8,10 +8,10 @@ public class AlbumItemDTO {
     private int order;
     private int position;   // for Adapter
 
-    public AlbumItemDTO() {
+    public LabAlbumItemDTO() {
     }
 
-    public AlbumItemDTO(int id, int type, String text, String imageUrl, int order) {
+    public LabAlbumItemDTO(int id, int type, String text, String imageUrl, int order) {
         this.id = id;
         this.type = type;
         this.text = text;
@@ -72,7 +72,7 @@ public class AlbumItemDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AlbumItemDTO that = (AlbumItemDTO) o;
+        LabAlbumItemDTO that = (LabAlbumItemDTO) o;
 
         if (id != that.id) return false;
         if (type != that.type) return false;
@@ -94,7 +94,7 @@ public class AlbumItemDTO {
 
     @Override
     public String toString() {
-        return "AlbumItemDTO{" +
+        return "LabAlbumItemDTO{" +
                 "id=" + id +
                 ", type=" + type +
                 ", text='" + text + '\'' +

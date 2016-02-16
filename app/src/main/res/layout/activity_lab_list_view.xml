@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="kr.co.bit.osf.projectlab.ImageUtilActivity">
+    tools:context=".lab.LabListViewActivity">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -16,25 +16,13 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout2">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Image List"
-            android:id="@+id/btnGetImageList" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Album List"
-            android:id="@+id/btnGetAlbumList" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="File Uri"
-            android:id="@+id/btnGetOutputMediaFileUri" />
+            android:text="ArrayAdapter"
+            android:id="@+id/btnListViewArrayAdapter" />
     </LinearLayout>
 
     <LinearLayout
@@ -42,15 +30,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/linearLayout">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/imageListView"
-            android:layout_gravity="center_horizontal"
-            android:background="@android:color/darker_gray" />
+            android:id="@+id/listView"
+            android:layout_gravity="center_horizontal" />
     </LinearLayout>
 </RelativeLayout>

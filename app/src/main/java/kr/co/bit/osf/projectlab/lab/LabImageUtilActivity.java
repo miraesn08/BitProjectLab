@@ -1,4 +1,4 @@
-package kr.co.bit.osf.projectlab;
+package kr.co.bit.osf.projectlab.lab;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,21 +15,24 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.List;
 
-public class ImageUtilActivity extends AppCompatActivity {
+import kr.co.bit.osf.projectlab.R;
+import kr.co.bit.osf.projectlab.common.ImageUtil;
+
+public class LabImageUtilActivity extends AppCompatActivity {
     private static final String TAG = "ImageUtilActivityLog";
 
     private ListView imageListView;
-    private AlbumItemAdapter imageListAdapter;
+    private LabAlbumItemAdapter imageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_util);
+        setContentView(R.layout.activity_lab_image_util);
 
         // http://berabue.blogspot.kr/2014/05/android-listview.html
         // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
         //imageListAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
-        imageListAdapter = new AlbumItemAdapter(getApplicationContext(), this);
+        imageListAdapter = new LabAlbumItemAdapter(getApplicationContext(), this);
 
         // Xml에서 추가한 ListView 연결
         imageListView = (ListView) findViewById(R.id.imageListView);
@@ -123,7 +126,7 @@ public class ImageUtilActivity extends AppCompatActivity {
 
                         // ListView에 아이템 추가
                         File imageFile = new File(data);
-                        AlbumItemDTO dto = new AlbumItemDTO(0,0,imageFile.getName(),imageFile.getAbsolutePath(),0);
+                        LabAlbumItemDTO dto = new LabAlbumItemDTO(0,0,imageFile.getName(),imageFile.getAbsolutePath(),0);
                         imageListAdapter.add(dto);
                     } while (cur.moveToNext());
                 }
@@ -142,7 +145,7 @@ public class ImageUtilActivity extends AppCompatActivity {
                     }
                     //
                     for(File item : albumList) {
-                        AlbumItemDTO dto = new AlbumItemDTO(0,0,item.getName(),item.getAbsolutePath(),0);
+                        LabAlbumItemDTO dto = new LabAlbumItemDTO(0,0,item.getName(),item.getAbsolutePath(),0);
                         imageListAdapter.add(dto);
                     }
                 } else {
@@ -165,7 +168,7 @@ public class ImageUtilActivity extends AppCompatActivity {
             // http://stackoverflow.com/questions/1740654/view-image-in-action-view-intent
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
-            AlbumItemDTO dto = (AlbumItemDTO)imageListAdapter.getItem(arg2);
+            LabAlbumItemDTO dto = (LabAlbumItemDTO)imageListAdapter.getItem(arg2);
             File file = new File(dto.getImageUrl());
             intent.setDataAndType(Uri.fromFile(file), "image/*");
             startActivity(intent);

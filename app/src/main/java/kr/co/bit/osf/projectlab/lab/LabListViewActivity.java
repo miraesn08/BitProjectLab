@@ -1,4 +1,4 @@
-package kr.co.bit.osf.projectlab;
+package kr.co.bit.osf.projectlab.lab;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,13 +12,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ListViewActivity extends AppCompatActivity {
+import kr.co.bit.osf.projectlab.R;
+
+public class LabListViewActivity extends AppCompatActivity {
     Context context  = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
+        setContentView(R.layout.activity_lab_list_view);
 
         (findViewById(R.id.btnListViewArrayAdapter)).setOnClickListener(new View.OnClickListener() {
             @Override

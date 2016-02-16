@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">ProjectLab</string>
-    <string name="button_caption_camera">CAMERA</string>
+    <string name="app_name">FlashCard</string>
     <!--box demo data-->
     <string name="box_demo_data_name">Animal</string>
     <!--card demo data-->

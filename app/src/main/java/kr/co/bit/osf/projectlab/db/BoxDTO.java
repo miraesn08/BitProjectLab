@@ -1,11 +1,10 @@
-package kr.co.bit.osf.projectlab.dto;
+package kr.co.bit.osf.projectlab.db;
 
 public class BoxDTO {
     private long id;
     private String name;
     private int type;           // 0:user box, 1:demo box
     int seq;
-    int position;               // for Adapter
 
     public BoxDTO() { }
 
@@ -50,14 +49,6 @@ public class BoxDTO {
 
     public void setSeq(int seq) {
         this.seq = seq;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
     @Override

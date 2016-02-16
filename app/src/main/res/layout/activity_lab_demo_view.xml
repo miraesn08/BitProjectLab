@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kr.co.bit.osf.projectlab.DemoViewActivity"
+    tools:context=".lab.LabDemoViewActivity"
     android:orientation="vertical">
 
     <android.support.v4.view.ViewPager

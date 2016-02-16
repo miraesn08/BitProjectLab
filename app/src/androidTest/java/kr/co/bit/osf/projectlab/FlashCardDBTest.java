@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
-import kr.co.bit.osf.projectlab.dto.BoxDTO;
-import kr.co.bit.osf.projectlab.dto.CardDTO;
+import kr.co.bit.osf.projectlab.db.BoxDTO;
+import kr.co.bit.osf.projectlab.db.CardDTO;
 
 // http://stackoverflow.com/questions/8499554/android-junit-test-for-sqliteopenhelper
 public class FlashCardDBTest extends AndroidTestCase {
