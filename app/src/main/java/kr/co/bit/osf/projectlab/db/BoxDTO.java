@@ -56,9 +56,12 @@ public class BoxDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BoxDTO that = (BoxDTO) o;
+        BoxDTO boxDTO = (BoxDTO) o;
 
-        return name.equals(that.name);
+        if (id != boxDTO.id) return false;
+        if (type != boxDTO.type) return false;
+        if (seq != boxDTO.seq) return false;
+        return name.equals(boxDTO.name);
 
     }
 

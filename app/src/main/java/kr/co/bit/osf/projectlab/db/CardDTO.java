@@ -26,6 +26,11 @@ public class CardDTO {
         this.id = id;
     }
 
+    public CardDTO(long id, String name, String imagePath, int type, int seq, int boxId) {
+        this(id, name, imagePath, type, boxId);
+        this.seq = seq;
+    }
+
     public long getId() {
         return id;
     }
@@ -74,17 +79,19 @@ public class CardDTO {
         this.boxId = boxId;
     }
 
-   @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        CardDTO that = (CardDTO) o;
+        CardDTO cardDTO = (CardDTO) o;
 
-        if (type != that.type) return false;
-        if (boxId != that.boxId) return false;
-        if (!name.equals(that.name)) return false;
-        return imagePath.equals(that.imagePath);
+        if (id != cardDTO.id) return false;
+        if (type != cardDTO.type) return false;
+        if (seq != cardDTO.seq) return false;
+        if (boxId != cardDTO.boxId) return false;
+        if (!name.equals(cardDTO.name)) return false;
+        return imagePath.equals(cardDTO.imagePath);
 
     }
 

@@ -21,7 +21,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
 
     // database version & name
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "flashCard.db";
+    private static final String DATABASE_NAME = "FlashCard.db";
 
     // http://developer.android.com/intl/ko/training/basics/data-storage/databases.html
     /* Inner class that defines the table contents */
@@ -105,6 +105,35 @@ public class FlashCardDB extends SQLiteOpenHelper {
         public static final int COLUMN_ID_BOX_ID = 5;
     }
 
+    public static abstract class StateEntry implements BaseColumns {
+        // table name
+        public static final String TABLE_NAME = "state";
+
+        // column name
+        public static final String COLUMN_NAME_ENTRY_ID = "id";
+        public static final String COLUMN_NAME_BOX_ID = "box_id";
+        public static final String COLUMN_NAME_CARD_ID = "card_id";
+
+        // table create statement
+        public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME
+                + "(" + COLUMN_NAME_ENTRY_ID + " INTEGER PRIMARY KEY"
+                + "," + COLUMN_NAME_BOX_ID + " INTEGER"
+                + "," + COLUMN_NAME_CARD_ID + " INTEGER"
+                + ")";
+
+        // table drop statement
+        public static final String DROP_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
+
+        // field list
+        public static final String FIELD_LIST =  COLUMN_NAME_ENTRY_ID
+                + "," + COLUMN_NAME_BOX_ID+ "," + COLUMN_NAME_CARD_ID;
+
+        // column id
+        public static final int COLUMN_ID_ENTRY_ID = 0;
+        public static final int COLUMN_ID_BOX_ID = 1;
+        public static final int COLUMN_ID_CARD_ID = 2;
+    }
+
     public FlashCardDB(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -116,11 +145,13 @@ public class FlashCardDB extends SQLiteOpenHelper {
         this.context = context;
     }
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
         db.execSQL(BoxEntry.CREATE_TABLE);
         db.execSQL(CardEntry.CREATE_TABLE);
+        db.execSQL(StateEntry.CREATE_TABLE);
     }
 
     @Override
@@ -128,6 +159,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         // on upgrade drop older tables
         db.execSQL(BoxEntry.DROP_TABLE);
         db.execSQL(CardEntry.DROP_TABLE);
+        db.execSQL(StateEntry.DROP_TABLE);
 
         // create new tables
         onCreate(db);
@@ -337,7 +369,8 @@ public class FlashCardDB extends SQLiteOpenHelper {
 
         String query = "select " + CardEntry.FIELD_LIST
                 + " from " + CardEntry.TABLE_NAME
-                + " where " + CardEntry.COLUMN_NAME_BOX_ID + " = " + boxId;
+                + " where " + CardEntry.COLUMN_NAME_BOX_ID + " = " + boxId
+                + " order by " + CardEntry.COLUMN_NAME_SEQ;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -362,6 +395,78 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return list;
     }
 
+    // state
+    public boolean addState(int boxId, int cardId){
+        ContentValues values = new ContentValues();
+        values.put(StateEntry.COLUMN_NAME_BOX_ID, boxId);
+        values.put(StateEntry.COLUMN_NAME_CARD_ID, cardId);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long newRowId = db.insert(StateEntry.TABLE_NAME, null, values);
+        db.close();
+
+        return (newRowId > 0);
+    }
+
+    public StateDTO getState() {
+        return getState(1);
+    }
+
+    public StateDTO getState(int id) {
+        StateDTO state = null;
+
+        String query = "select " + StateEntry.FIELD_LIST
+                + " from " + StateEntry.TABLE_NAME
+                + " where " + StateEntry.COLUMN_NAME_ENTRY_ID + " = " + id;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                state = new StateDTO();
+                state.setId(Integer.parseInt(cursor.getString(StateEntry.COLUMN_ID_ENTRY_ID)));
+                state.setBoxId(Integer.parseInt(cursor.getString(StateEntry.COLUMN_ID_BOX_ID)));
+                state.setCardId(Integer.parseInt(cursor.getString(StateEntry.COLUMN_ID_CARD_ID)));
+            }
+            cursor.close();
+        }
+
+        db.close();
+
+        return state;
+    }
+
+    public boolean deleteState(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = StateEntry.COLUMN_NAME_ENTRY_ID + " = ?";
+        String[] selectionArgs = { String.valueOf(id)};
+        int count = db.delete(StateEntry.TABLE_NAME, selection, selectionArgs);
+        db.close();
+
+        return (count > 0);
+    }
+
+    public boolean updateState(StateDTO newValue) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(StateEntry.COLUMN_NAME_BOX_ID, newValue.getBoxId());
+        values.put(StateEntry.COLUMN_NAME_CARD_ID, newValue.getCardId());
+
+        String selection = StateEntry.COLUMN_NAME_ENTRY_ID + " = ?";
+        String[] selectionArgs = { String.valueOf(newValue.getId()) };
+
+        int count = db.update(
+                StateEntry.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+        db.close();
+
+        return (count > 0);
+    }
+
     // demo data
     public boolean createBoxDemoData() {
         BoxDTO demoBox = new BoxDTO(0,
@@ -375,15 +480,15 @@ public class FlashCardDB extends SQLiteOpenHelper {
                 new CardDTO(0,
                         context.getString(R.string.card_demo_data1_name),
                         context.getString(R.string.card_demo_data1_image_name),
-                        CardEntry.TYPE_DEMO, 1),
+                        CardEntry.TYPE_DEMO, 1, 1),
                 new CardDTO(0,
                         context.getString(R.string.card_demo_data2_name),
                         context.getString(R.string.card_demo_data2_image_name),
-                        CardEntry.TYPE_DEMO, 1),
+                        CardEntry.TYPE_DEMO, 2, 1),
                 new CardDTO(0,
                         context.getString(R.string.card_demo_data3_name),
                         context.getString(R.string.card_demo_data3_image_name),
-                        CardEntry.TYPE_DEMO, 1)
+                        CardEntry.TYPE_DEMO, 3, 1)
         };
 
         return (addCard(demoList[0]) && addCard(demoList[1]) && addCard(demoList[2]));

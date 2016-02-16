@@ -8,9 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kr.co.bit.osf.projectlab.db.FlashCardDB;
 import kr.co.bit.osf.projectlab.db.BoxDTO;
 import kr.co.bit.osf.projectlab.db.CardDTO;
+import kr.co.bit.osf.projectlab.db.FlashCardDB;
+import kr.co.bit.osf.projectlab.db.StateDTO;
 
 // http://stackoverflow.com/questions/8499554/android-junit-test-for-sqliteopenhelper
 public class FlashCardDBTest extends AndroidTestCase {
@@ -196,6 +197,51 @@ public class FlashCardDBTest extends AndroidTestCase {
 
         list = db.getCardByBoxId(9999);
         assertEquals(true, (list.size() == 0));
+    }
+
+    // state
+    private void setupStateData() {
+        db.addState(1, 1);
+    }
+
+    public void testAddState() throws Exception {
+        int boxId = 1;
+        int cardId = 1;
+
+        assertEquals(true, db.addState(boxId, cardId));
+    }
+
+    public void testGetCard() throws Exception {
+        setupStateData();
+
+        StateDTO state = db.getState();
+
+        assertNotNull(state);
+        assertEquals(true, (state.getBoxId() == 1));
+        assertEquals(true, (state.getCardId() == 1));
+
+        state = db.getState(9999);
+        assertNull(state);
+    }
+
+    public void testDeleteState() throws Exception {
+        setupStateData();
+        int deleteId = 1;
+
+        assertEquals(true, (db.deleteState(deleteId)));
+        assertNull(db.getState(deleteId));
+    }
+
+    public void testUpdateState() throws Exception {
+        setupStateData();
+        int updateId = 1;
+
+        StateDTO newValue = new StateDTO(updateId, updateId+1, updateId+2);
+        assertEquals(true, (db.updateState(newValue)));
+
+        StateDTO updatedValue = db.getState(updateId);
+        assertNotNull(updatedValue);
+        assertEquals(true, (newValue.equals(updatedValue)));
     }
 
     // demo data
