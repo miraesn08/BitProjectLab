@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -91,14 +91,20 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             Log.i(TAG, "instantiateItem:position:" + position);
-            View view = null;
 
-            view = inflater.inflate(R.layout.activity_main_view_pager_child, null);
-            ImageView img = (ImageView) view.findViewById(R.id.cardViewPagerChildImage);
+            View view = inflater.inflate(R.layout.activity_main_view_pager_child, null);
+            ImageView imageView = (ImageView) view.findViewById(R.id.cardViewPagerChildImage);
+            TextView textView = (TextView) view.findViewById(R.id.cardViewPagerChildText);
 
-            String imageName = list.get(position).getImagePath();
+            PagerHolder holder = new PagerHolder(list.get(position), true, imageView, textView);
+            // image
+            String imageName = holder.card.getImagePath();
             int imageId = context.getResources().getIdentifier("drawable/" + imageName, null, context.getPackageName());
-            img.setImageResource(imageId);
+            imageView.setImageResource(imageId);
+            imageView.setVisibility(View.VISIBLE);
+            // text
+            textView.setText(holder.card.getName());
+            textView.setVisibility(View.INVISIBLE);
 
             // todo: set click listener
             view.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            view.setTag(list.get(position));
+            view.setTag(holder);
             container.addView(view);
 
             return view;
@@ -127,8 +133,65 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void childViewClicked(View view) {
-        CardDTO card = (CardDTO)view.getTag();
-        Toast.makeText(getApplicationContext(), card.getName(), Toast.LENGTH_LONG).show();
-        Log.i(TAG, "childViewClicked:card:" + card);
+        PagerHolder holder = (PagerHolder)view.getTag();
+        //Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_LONG).show();
+
+        // todo: flip animation by front/back state
+        if (holder.isFront()) {
+            // todo: show text
+            (holder.getImageView()).setVisibility(View.INVISIBLE);
+            (holder.getTextView()).setVisibility(View.VISIBLE);
+        } else {
+            // todo: show image
+            (holder.getImageView()).setVisibility(View.VISIBLE);
+            (holder.getTextView()).setVisibility(View.INVISIBLE);
+        }
+
+        // todo: change front/back state
+        holder.flip();
+        view.setTag(holder);
+        Log.i(TAG, "childViewClicked:holder:" + holder);
+    }
+
+    private class PagerHolder {
+        private CardDTO card;
+        private boolean isFront;
+        private ImageView imageView;
+        private TextView textView;
+
+        public PagerHolder(CardDTO card, boolean isFront, ImageView imageView, TextView textView) {
+            this.isFront = isFront;
+            this.imageView = imageView;
+            this.textView = textView;
+            this.card = card;
+        }
+
+        public ImageView getImageView() {
+            return imageView;
+        }
+
+        public TextView getTextView() {
+            return textView;
+        }
+
+        public boolean isFront() {
+            return isFront;
+        }
+
+        public void flip() {
+            this.isFront = !this.isFront;
+        }
+
+        public CardDTO getCard() {
+            return card;
+        }
+
+        @Override
+        public String toString() {
+            return "pagerHolder{" +
+                    "isFront=" + isFront +
+                    ", card=" + card +
+                    '}';
+        }
     }
 }
