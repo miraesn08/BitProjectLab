@@ -258,7 +258,7 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
         // Define 'where' part of query.
         String selection = BoxEntry.COLUMN_NAME_ENTRY_ID + " = ?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = { String.valueOf(id) };
+        String[] selectionArgs = {String.valueOf(id)};
         // Issue SQL statement.
         int count = db.delete(BoxEntry.TABLE_NAME, selection, selectionArgs);
         db.close();
@@ -279,7 +279,7 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
 
         // Which row to update, based on the ID
         String selection = BoxEntry.COLUMN_NAME_ENTRY_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(newValue.getId()) };
+        String[] selectionArgs = {String.valueOf(newValue.getId())};
 
         int count = db.update(
                 BoxEntry.TABLE_NAME,
@@ -371,7 +371,7 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
     public boolean deleteCard(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = CardEntry.COLUMN_NAME_ENTRY_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id)};
+        String[] selectionArgs = {String.valueOf(id)};
         int count = db.delete(CardEntry.TABLE_NAME, selection, selectionArgs);
         db.close();
 
@@ -390,7 +390,7 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
         values.put(CardEntry.COLUMN_NAME_BOX_ID, newValue.getBoxId());
 
         String selection = CardEntry.COLUMN_NAME_ENTRY_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(newValue.getId()) };
+        String[] selectionArgs = {String.valueOf(newValue.getId())};
 
         int count = db.update(
                 CardEntry.TABLE_NAME,
@@ -432,6 +432,17 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
         db.close();
 
         return list;
+    }
+
+    @Override
+    public boolean deleteCardByBoxId(int boxId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = CardEntry.COLUMN_NAME_BOX_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(boxId)};
+        int count = db.delete(CardEntry.TABLE_NAME, selection, selectionArgs);
+        db.close();
+
+        return (count > 0);
     }
 
     // state
@@ -483,7 +494,7 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
     public boolean deleteState(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = StateEntry.COLUMN_NAME_ENTRY_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(id)};
+        String[] selectionArgs = {String.valueOf(id)};
         int count = db.delete(StateEntry.TABLE_NAME, selection, selectionArgs);
         db.close();
 
@@ -499,7 +510,7 @@ public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, St
         values.put(StateEntry.COLUMN_NAME_CARD_ID, newValue.getCardId());
 
         String selection = StateEntry.COLUMN_NAME_ENTRY_ID + " = ?";
-        String[] selectionArgs = { String.valueOf(newValue.getId()) };
+        String[] selectionArgs = {String.valueOf(newValue.getId())};
 
         int count = db.update(
                 StateEntry.TABLE_NAME,
