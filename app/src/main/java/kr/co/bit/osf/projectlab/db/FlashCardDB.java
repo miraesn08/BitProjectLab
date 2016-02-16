@@ -13,7 +13,7 @@ import java.util.List;
 import kr.co.bit.osf.projectlab.R;
 
 // http://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
-public class FlashCardDB extends SQLiteOpenHelper {
+public class FlashCardDB extends SQLiteOpenHelper implements BoxDAO, CardDAO, StateDAO {
     private static final String TAG = "FlashCardDBLog";
 
     // context
@@ -165,6 +165,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
     }
 
     // box
+    @Override
     public BoxDTO addBox(String name){
         ContentValues values = new ContentValues();
         values.put(BoxEntry.COLUMN_NAME_NAME, name);
@@ -178,6 +179,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return getBox(name);
     }
 
+    @Override
     public BoxDTO getBox(String name) {
         BoxDTO box = null;
 
@@ -204,6 +206,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return box;
     }
 
+    @Override
     public BoxDTO getBox(int id) {
         BoxDTO box = null;
 
@@ -230,7 +233,8 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return box;
     }
 
-    public boolean addBox(BoxDTO box){
+    @Override
+    public boolean addBox(BoxDTO box) {
         ContentValues values = new ContentValues();
         values.put(BoxEntry.COLUMN_NAME_NAME, box.getName());
         values.put(BoxEntry.COLUMN_NAME_TYPE, box.getType());
@@ -246,6 +250,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (newRowId > 0);
     }
 
+    @Override
     public boolean deleteBox(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -261,6 +266,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (count > 0);
     }
 
+    @Override
     public boolean updateBox(BoxDTO newValue) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -285,6 +291,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (count > 0);
     }
 
+    @Override
     public List<BoxDTO> getBoxAll() {
         List<BoxDTO> list = new ArrayList<>();
 
@@ -314,7 +321,8 @@ public class FlashCardDB extends SQLiteOpenHelper {
     }
 
     // card
-    public boolean addCard(CardDTO card){
+    @Override
+    public boolean addCard(CardDTO card) {
         ContentValues values = new ContentValues();
         values.put(CardEntry.COLUMN_NAME_NAME, card.getName());
         values.put(CardEntry.COLUMN_NAME_IMAGE_PATH, card.getImagePath());
@@ -330,6 +338,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (newRowId > 0);
     }
 
+    @Override
     public CardDTO getCard(int id) {
         CardDTO card = null;
 
@@ -358,6 +367,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return card;
     }
 
+    @Override
     public boolean deleteCard(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = CardEntry.COLUMN_NAME_ENTRY_ID + " = ?";
@@ -368,6 +378,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (count > 0);
     }
 
+    @Override
     public boolean updateCard(CardDTO newValue) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -391,6 +402,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (count > 0);
     }
 
+    @Override
     public List<CardDTO> getCardByBoxId(int boxId) {
         List<CardDTO> list = new ArrayList<>();
 
@@ -423,7 +435,8 @@ public class FlashCardDB extends SQLiteOpenHelper {
     }
 
     // state
-    public boolean addState(int boxId, int cardId){
+    @Override
+    public boolean addState(int boxId, int cardId) {
         ContentValues values = new ContentValues();
         values.put(StateEntry.COLUMN_NAME_BOX_ID, boxId);
         values.put(StateEntry.COLUMN_NAME_CARD_ID, cardId);
@@ -435,10 +448,12 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (newRowId > 0);
     }
 
+    @Override
     public StateDTO getState() {
         return getState(1);
     }
 
+    @Override
     public StateDTO getState(int id) {
         StateDTO state = null;
 
@@ -464,6 +479,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return state;
     }
 
+    @Override
     public boolean deleteState(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String selection = StateEntry.COLUMN_NAME_ENTRY_ID + " = ?";
@@ -474,6 +490,7 @@ public class FlashCardDB extends SQLiteOpenHelper {
         return (count > 0);
     }
 
+    @Override
     public boolean updateState(StateDTO newValue) {
         SQLiteDatabase db = this.getWritableDatabase();
 
