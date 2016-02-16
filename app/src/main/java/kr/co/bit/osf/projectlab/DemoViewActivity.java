@@ -1,81 +1,129 @@
 package kr.co.bit.osf.projectlab;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import kr.co.bit.osf.projectlab.db.FlashCardDB;
+import kr.co.bit.osf.projectlab.dto.CardDTO;
 
 public class DemoViewActivity extends AppCompatActivity {
     final static String TAG = "DemoViewActivityLog";
-    ViewFlipper flipper;
+    ViewPager pager;
+
+    // card data list
+    CardDTO[] cardList = {
+            new CardDTO("dog","dog", FlashCardDB.CardEntry.TYPE_DEMO, 1),
+            new CardDTO("cat", "cat", FlashCardDB.CardEntry.TYPE_DEMO, 1),
+            new CardDTO("rabbit", "rabbit", FlashCardDB.CardEntry.TYPE_DEMO, 1)
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo_view);
 
-        flipper = (ViewFlipper) findViewById(R.id.demoViewFlipper);
-        Log.i(TAG, "find view flipper");
-        // add image
-        int[] imageData = { R.drawable.dog, R.drawable.cat, R.drawable.rabbit };
-        for (int imageId : imageData) {
-            ImageView img = new ImageView(this);
-            img.setImageResource(imageId);
-            flipper.addView(img);
+        // http://arabiannight.tistory.com/entry/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9CAndorid-Viewpager-%EC%82%AC%EC%9A%A9-%ED%95%98%EA%B8%B0
+        pager = (ViewPager) findViewById(R.id.demoViewPager);
+        pager.setAdapter(new DemoViewPagerAdapter(getApplicationContext(),
+                new ArrayList<>(Arrays.asList(cardList))));
+    }
+
+    /**
+     * PagerAdapter
+     * http://arabiannight.tistory.com/entry/%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9CAndorid-Viewpager-%EC%82%AC%EC%9A%A9-%ED%95%98%EA%B8%B0
+     */
+    private class DemoViewPagerAdapter extends PagerAdapter {
+        List<CardDTO> list = null;
+
+        private Context context = null;
+        private LayoutInflater inflater;
+
+        public DemoViewPagerAdapter(Context context, List<CardDTO> list){
+            super();
+            this.context = context;
+            this.list = list;
+            inflater = LayoutInflater.from(context);
+            Log.i(TAG, "list:size():" + list.size());
         }
-        Log.i(TAG, "add image");
 
-        //http://kitesoft.tistory.com/75
-        //ViewFlipper가 View를 교체할 때 애니메이션이 적용되도록 설정
-        //애니메이션은 안드로이드 시스템이 보유하고 있는  animation 리소스 파일 사용.
-        //ViewFlipper의 View가 교체될 때 새로 보여지는 View의 등장 애니메이션
-        //AnimationUtils 클래스 : 트윈(Tween) Animation 리소스 파일을 Animation 객체로 만들어 주는 클래스
-        //AnimationUtils.loadAnimaion() - 트윈(Tween) Animation 리소스 파일을 Animation 객체로 만들어 주는 메소드
-        //첫번째 파라미터 : Context
-        //두번재 파라미터 : 트윈(Tween) Animation 리소스 파일(여기서는 안드로이드 시스템의 리소스 파일을 사용
-        //                    (왼쪽에서 슬라이딩되며 등장)
-        Animation showIn = AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left);
-        //ViewFlipper에게 등장 애니메이션 적용
-        flipper.setInAnimation(showIn);
-        Log.i(TAG, "set in animation");
-
-        //ViewFlipper의 View가 교체될 때 퇴장하는 View의 애니메이션
-        //오른쪽으로 슬라이딩 되면 퇴장하는 애니메이션 리소스 파일 적용.
-        //위와 다른 방법으로 애니메이션을 적용해봅니다.
-        //첫번째 파라미터 : Context
-        //두번재 파라미터 : 트윈(Tween) Animation 리소스 파일(오른쪽으로 슬라이딩되며 퇴장)
-        flipper.setOutAnimation(this, android.R.anim.slide_out_right);
-        Log.i(TAG, "set out animation");
-
-        // previous
-        (findViewById(R.id.btnDemoViewPrevious)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flipper.showPrevious();
+        @Override
+        public int getCount() {
+            if (list != null) {
+                return list.size();
+            } else {
+                return 0;
             }
-        });
-        // next
-        (findViewById(R.id.btnDemoViewNext)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flipper.showNext();
-            }
-        });
+        }
 
-        // state
-        (findViewById(R.id.btnDemoViewGetFlipperState)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String state = "";
-                state += "displayChild:" + flipper.getDisplayedChild();
-                Toast.makeText(getApplicationContext(),state,Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "flipper state:" + state);
-            }
-        });
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Log.i(TAG, "instantiateItem:position:" + position);
+            View view = null;
+
+            //http://kitesoft.tistory.com/76
+            //새로운 View 객체를 Layoutinflater를 이용해서 생성
+            //만들어질 View의 설계는 res폴더>>layout폴더>>viewpater_childview.xml 레이아웃 파일 사용
+            view = inflater.inflate(R.layout.activity_demo_view_pager_child, null);
+
+            //만들어진 View안에 있는 ImageView 객체 참조
+            //위에서 inflated 되어 만들어진 view로부터 findViewById()를 해야 하는 것에 주의.
+            ImageView img = (ImageView) view.findViewById(R.id.imageViewPagerChildImage);
+
+            //ImageView에 현재 position 번째에 해당하는 이미지를 보여주기 위한 작업
+            //현재 position에 해당하는 이미지를 setting
+            String imageName = list.get(position).getImagePath();
+            // http://stackoverflow.com/questions/6783327/setimageresource-from-a-string
+            int imageId = context.getResources().getIdentifier("drawable/" + imageName, null, context.getPackageName());
+            img.setImageResource(imageId);
+
+            // click listener
+            view.setTag(list.get(position));
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    childViewClicked(v);
+                }
+            });
+
+            //ViewPager에 만들어 낸 View 추가
+            container.addView(view);
+
+            //Image가 세팅된 View를 리턴
+            return view;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            Log.i(TAG, "destroyItem:position:" + position);
+            //화면에 보이지 않은 View는파쾨를 해서 메모리를 관리함.
+            //첫번째 파라미터 : ViewPager
+            //두번째 파라미터 : 파괴될 View의 인덱스(가장 처음부터 0,1,2,3...)
+            //세번째 파라미터 : 파괴될 객체(더 이상 보이지 않은 View 객체)
+            container.removeView((View)object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+    }
+
+    private void childViewClicked(View v) {
+        CardDTO card = (CardDTO)v.getTag();
+        Toast.makeText(getApplicationContext(), card.getName(), Toast.LENGTH_LONG).show();
+        Log.i(TAG, "childViewClicked:card:" + card);
     }
 }
