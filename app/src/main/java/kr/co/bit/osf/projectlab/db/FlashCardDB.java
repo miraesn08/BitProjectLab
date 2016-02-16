@@ -145,7 +145,6 @@ public class FlashCardDB extends SQLiteOpenHelper {
         this.context = context;
     }
 
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
@@ -284,6 +283,34 @@ public class FlashCardDB extends SQLiteOpenHelper {
         db.close();
 
         return (count > 0);
+    }
+
+    public List<BoxDTO> getBoxAll() {
+        List<BoxDTO> list = new ArrayList<>();
+
+        String query = "select " + BoxEntry.FIELD_LIST
+                + " from " + BoxEntry.TABLE_NAME
+                + " order by " + BoxEntry.COLUMN_NAME_SEQ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                BoxDTO box = new BoxDTO();
+                box.setId(Integer.parseInt(cursor.getString(BoxEntry.COLUMN_ID_ENTRY_ID)));
+                box.setName(cursor.getString(BoxEntry.COLUMN_ID_NAME));
+                box.setType(Integer.parseInt(cursor.getString(BoxEntry.COLUMN_ID_TYPE)));
+                box.setSeq(Integer.parseInt(cursor.getString(BoxEntry.COLUMN_ID_SEQ)));
+
+                list.add(box);
+            }
+            cursor.close();
+        }
+
+        db.close();
+
+        return list;
     }
 
     // card
@@ -492,6 +519,13 @@ public class FlashCardDB extends SQLiteOpenHelper {
         };
 
         return (addCard(demoList[0]) && addCard(demoList[1]) && addCard(demoList[2]));
+    }
+
+    // initialize db
+    public boolean initialize() {
+        return createBoxDemoData()
+                && createCardDemoData()
+                && addState(1, 1);
     }
 
 }

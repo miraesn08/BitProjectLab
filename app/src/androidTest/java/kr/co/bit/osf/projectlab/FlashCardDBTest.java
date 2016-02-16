@@ -211,7 +211,7 @@ public class FlashCardDBTest extends AndroidTestCase {
         assertEquals(true, db.addState(boxId, cardId));
     }
 
-    public void testGetCard() throws Exception {
+    public void testGetState() throws Exception {
         setupStateData();
 
         StateDTO state = db.getState();
@@ -263,6 +263,33 @@ public class FlashCardDBTest extends AndroidTestCase {
         assertEquals(true, context.getString(R.string.card_demo_data3_image_name).equals(card.getImagePath()));
         assertEquals(true, (card.getType() == FlashCardDB.CardEntry.TYPE_DEMO));
         assertEquals(true, (card.getBoxId() == 1));
+    }
+
+    // initialize
+    public void testInitialize() throws Exception {
+        assertEquals(true, db.initialize());
+
+        List<BoxDTO> boxList = db.getBoxAll();
+        assertEquals(true, (boxList.size() == 1));
+
+        BoxDTO box = db.getBox(1);
+        assertEquals(true, context.getString(R.string.box_demo_data_name).equals(box.getName()));
+        assertEquals(true, (box.getType() == FlashCardDB.BoxEntry.TYPE_DEMO));
+        assertEquals(true, (box.getSeq() == 1));
+
+        List<CardDTO> cardList = db.getCardByBoxId(1);
+        assertEquals(true, (cardList.size() == 3));
+
+        CardDTO card = db.getCard(3);
+        assertEquals(true, context.getString(R.string.card_demo_data3_name).equals(card.getName()));
+        assertEquals(true, context.getString(R.string.card_demo_data3_image_name).equals(card.getImagePath()));
+        assertEquals(true, (card.getType() == FlashCardDB.CardEntry.TYPE_DEMO));
+        assertEquals(true, (card.getBoxId() == 1));
+
+        StateDTO state = db.getState();
+        assertNotNull(state);
+        assertEquals(true, (state.getBoxId() == 1));
+        assertEquals(true, (state.getCardId() == 1));
     }
 
 }
