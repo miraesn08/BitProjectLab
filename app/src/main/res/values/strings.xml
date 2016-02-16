@@ -9,4 +9,6 @@
     <string name="card_demo_data2_image_name">cat</string>
     <string name="card_demo_data3_name">rabbit</string>
     <string name="card_demo_data3_image_name">rabbit</string>
+    <!--main activity-->
+    <string name="card_view_gallery_button_text">Gallery</string>
 </resources>

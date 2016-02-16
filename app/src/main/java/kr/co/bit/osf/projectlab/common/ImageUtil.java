@@ -1,6 +1,8 @@
 package kr.co.bit.osf.projectlab.common;
 
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -172,5 +174,23 @@ public class ImageUtil {
 		/* Associate the Bitmap to the ImageView */
         imageView.setImageBitmap(bitmap);
         Log.i(TAG, tagPrefix + "Associate the Bitmap to the ImageView");
+    }
+
+    public static String getImagePathFromIntentData(Context context, Intent data) {
+        Uri selectedImageUri = data.getData();
+        String[] projection = { MediaStore.MediaColumns.DATA };
+        CursorLoader cursorLoader = new CursorLoader(context, selectedImageUri, projection, null, null, null);
+        Cursor cursor =cursorLoader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        String selectedImagePath = cursor.getString(column_index);
+        Log.i(TAG, "selectedImagePath=" + selectedImagePath);
+
+        return selectedImagePath;
+    }
+
+    // http://stackoverflow.com/questions/26570084/how-to-get-file-name-from-file-path-in-android
+    public static String getNameFromPath(String pathName) {
+        return pathName.substring(pathName.lastIndexOf("/") + 1);
     }
 }

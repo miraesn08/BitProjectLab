@@ -1,6 +1,7 @@
 package kr.co.bit.osf.projectlab;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import kr.co.bit.osf.projectlab.common.ImageUtil;
 import kr.co.bit.osf.projectlab.db.CardDTO;
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
 import kr.co.bit.osf.projectlab.db.StateDTO;
@@ -27,6 +29,10 @@ public class MainActivity extends AppCompatActivity {
     List<CardDTO> cardList = null;
 
     ViewPager pager;
+    CardViewPagerAdapter pagerAdapter;
+
+    final int REQ_CODE_SELECT_PICTURE = 501;
+    final int REQ_CODE_CAPTURE_IMAGE = 502;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,22 @@ public class MainActivity extends AppCompatActivity {
         // todo: find view pager
         pager = (ViewPager) findViewById(R.id.cardViewPager);
         // todo: set pager adapter
-        pager.setAdapter(new CardViewPagerAdapter(getApplicationContext(), cardList));
+        pagerAdapter = new CardViewPagerAdapter(getApplicationContext(), cardList);
+        pager.setAdapter(pagerAdapter);
+
+        // todo: add card from gallery
+        (findViewById(R.id.cardViewGalleryButton)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "cardViewGalleryButton clicked");
+                Intent intent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                startActivityForResult(
+                        Intent.createChooser(intent, "Select Picture"),
+                        REQ_CODE_SELECT_PICTURE);
+            }
+        });
     }
 
     @Override
@@ -69,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         List<CardDTO> list = null;
 
         private Context context = null;
+
         private LayoutInflater inflater;
 
         public CardViewPagerAdapter(Context context, List<CardDTO> list){
@@ -98,9 +120,15 @@ public class MainActivity extends AppCompatActivity {
 
             PagerHolder holder = new PagerHolder(list.get(position), true, imageView, textView);
             // image
-            String imageName = holder.card.getImagePath();
-            int imageId = context.getResources().getIdentifier("drawable/" + imageName, null, context.getPackageName());
-            imageView.setImageResource(imageId);
+            String imagePath = holder.card.getImagePath();
+            if (holder.card.getType() == FlashCardDB.CardEntry.TYPE_USER) {
+                // load image from sd card
+                ImageUtil.showImageFileInImageView(imagePath, imageView);
+            } else {
+                // card demo data
+                int imageId = context.getResources().getIdentifier("drawable/" + imagePath, null, context.getPackageName());
+                imageView.setImageResource(imageId);
+            }
             imageView.setVisibility(View.VISIBLE);
             // text
             textView.setText(holder.card.getName());
@@ -129,6 +157,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            // http://stackoverflow.com/questions/10611018/how-to-update-viewpager-content
+            // update ViewPager content, but not so good
+            return POSITION_NONE;
         }
     }
 
@@ -192,6 +227,37 @@ public class MainActivity extends AppCompatActivity {
                     "isFront=" + isFront +
                     ", card=" + card +
                     '}';
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG,"requestCode=" + requestCode + ",resultCode=" + resultCode);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQ_CODE_SELECT_PICTURE:
+                    // todo: get image path
+                    String imagePath = ImageUtil.getImagePathFromIntentData(this, data);
+                    Log.i(TAG,"selected picture path:" + imagePath);
+                    // todo: get image name
+                    String imageName = ImageUtil.getNameFromPath(imagePath);
+                    Log.i(TAG,"selected picture name:" + imageName);
+                    // todo: get card dto
+                    CardDTO newCard =  new CardDTO(imageName, imagePath,
+                            FlashCardDB.CardEntry.TYPE_USER, cardState.getBoxId());
+                    // todo: get last sequence and set next sequence
+                    Log.i(TAG, "get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
+                    newCard.setSeq(cardList.get(cardList.size() - 1).getSeq() + 1);
+                    // todo: save new card to db
+                    db.addCard(newCard);
+                    // todo: add card list
+                    cardList.add(newCard);
+                    pagerAdapter.notifyDataSetChanged();    // update view pager
+                    Log.i(TAG, "add card list:" + imageName);
+                    break;
+                case REQ_CODE_CAPTURE_IMAGE:
+                    break;
+            }
         }
     }
 }
