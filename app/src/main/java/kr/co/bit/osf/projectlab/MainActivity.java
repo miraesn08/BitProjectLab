@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,8 @@ import kr.co.bit.osf.projectlab.db.CardDTO;
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
 import kr.co.bit.osf.projectlab.db.StateDAO;
 import kr.co.bit.osf.projectlab.db.StateDTO;
+import kr.co.bit.osf.projectlab.flip3d.DisplayNextView;
+import kr.co.bit.osf.projectlab.flip3d.Flip3dAnimation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -177,19 +180,16 @@ public class MainActivity extends AppCompatActivity {
         PagerHolder holder = (PagerHolder)view.getTag();
         //Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_LONG).show();
 
-        // todo: change front/back state
-        holder.flip();
-
         // todo: flip animation by front/back state
         if (holder.isFront()) {
-            // todo: show image
-            (holder.getImageView()).setVisibility(View.VISIBLE);
-            (holder.getTextView()).setVisibility(View.INVISIBLE);
-        } else {
             // todo: show text
-            (holder.getImageView()).setVisibility(View.INVISIBLE);
-            (holder.getTextView()).setVisibility(View.VISIBLE);
+            applyRotation(holder.isFront(), 0, -90, holder.getImageView(), holder.getTextView());
+        } else {
+            // todo: show image
+            applyRotation(holder.isFront(), 0, 90, holder.getImageView(), holder.getTextView());
         }
+        // todo: change front/back state
+        holder.flip();
 
         // todo: save holder
         view.setTag(holder);
@@ -266,6 +266,28 @@ public class MainActivity extends AppCompatActivity {
                 case REQ_CODE_CAPTURE_IMAGE:
                     break;
             }
+        }
+    }
+
+    // http://www.inter-fuser.com/2009/08/android-animations-3d-flip.html
+    private void applyRotation(boolean isFirstImage, float start, float end,
+                               ImageView imageView, TextView textView) {
+        // Find the center of image
+        final float centerX = imageView.getWidth() / 2.0f;
+        final float centerY = imageView.getHeight() / 2.0f;
+
+        // Create a new 3D rotation with the supplied parameter
+        // The animation listener is used to trigger the next animation
+        final Flip3dAnimation rotation = new Flip3dAnimation(start, end, centerX, centerY);
+        rotation.setDuration(500);
+        rotation.setFillAfter(true);
+        rotation.setInterpolator(new AccelerateInterpolator());
+        rotation.setAnimationListener(new DisplayNextView(isFirstImage, imageView, textView));
+
+        if (isFirstImage) {
+            imageView.startAnimation(rotation);
+        } else {
+            textView.startAnimation(rotation);
         }
     }
 }
