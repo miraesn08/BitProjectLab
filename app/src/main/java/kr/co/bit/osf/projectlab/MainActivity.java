@@ -47,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // todo: full screen
+        // full screen
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.hide();
 
-        // todo: read state from db
+        // read state from db
         db = new FlashCardDB(this);
         stateDao = db;
         cardState = stateDao.getState();
@@ -62,20 +62,20 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.i(TAG, "read card state:" + cardState);
 
-        // todo: read card list by state
+        // read card list by state
         cardDao = db;
         cardList = cardDao.getCardByBoxId(cardState.getBoxId());
         Log.i(TAG, "card list:size:" + cardList.size());
         Log.i(TAG, "card list:value:" + cardList);
 
-        // todo: show card list
-        // todo: find view pager
+        // show card list
+        // find view pager
         pager = (ViewPager) findViewById(R.id.cardViewPager);
-        // todo: set pager adapter
+        // set pager adapter
         pagerAdapter = new CardViewPagerAdapter(getApplicationContext(), cardList);
         pager.setAdapter(pagerAdapter);
 
-        // todo: add card from gallery
+        // add card from gallery
         (findViewById(R.id.cardViewGalleryButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,12 +94,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        // todo: write card state
+        // write card state
         stateDao.updateState(cardState);
         Log.i(TAG, "write card state:" + cardState);
     }
 
-    // todo: pager adapter
+    // pager adapter
     private class CardViewPagerAdapter extends PagerAdapter {
         List<CardDTO> list = null;
 
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(holder.card.getName());
             textView.setVisibility(View.INVISIBLE);
 
-            // todo: set click listener
+            // set click listener
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,18 +185,18 @@ public class MainActivity extends AppCompatActivity {
         PagerHolder holder = (PagerHolder)view.getTag();
         //Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_LONG).show();
 
-        // todo: flip animation by front/back state
+        // flip animation by front/back state
         if (holder.isFront()) {
-            // todo: show text
+            // show text
             applyRotation(holder.isFront(), 0, -90, holder.getImageView(), holder.getTextView());
         } else {
-            // todo: show image
+            // show image
             applyRotation(holder.isFront(), 0, 90, holder.getImageView(), holder.getTextView());
         }
-        // todo: change front/back state
+        // change front/back state
         holder.flip();
 
-        // todo: save holder
+        // save holder
         view.setTag(holder);
         Log.i(TAG, "childViewClicked:holder:" + holder);
     }
@@ -249,21 +249,21 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQ_CODE_SELECT_PICTURE:
-                    // todo: get image path
+                    // get image path
                     String imagePath = ImageUtil.getImagePathFromIntentData(this, data);
                     Log.i(TAG,"selected picture path:" + imagePath);
-                    // todo: get image name
+                    // get image name
                     String imageName = ImageUtil.getNameFromPath(imagePath);
                     Log.i(TAG,"selected picture name:" + imageName);
-                    // todo: get card dto
+                    // get card dto
                     CardDTO newCard =  new CardDTO(imageName, imagePath,
                             FlashCardDB.CardEntry.TYPE_USER, cardState.getBoxId());
-                    // todo: get last sequence and set next sequence
+                    // get last sequence and set next sequence
                     Log.i(TAG, "get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
                     newCard.setSeq(cardList.get(cardList.size() - 1).getSeq() + 1);
-                    // todo: save new card to db
+                    // save new card to db
                     cardDao.addCard(newCard);
-                    // todo: add card list
+                    // add card list
                     cardList.add(newCard);
                     pagerAdapter.notifyDataSetChanged();    // update view pager
                     Log.i(TAG, "add card list:" + imageName);
