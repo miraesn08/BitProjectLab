@@ -13,12 +13,12 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import kr.co.bit.osf.projectlab.common.Dlog;
 import kr.co.bit.osf.projectlab.common.ImageUtil;
+import kr.co.bit.osf.projectlab.common.IntentExtrasName;
 import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.db.CardDAO;
 import kr.co.bit.osf.projectlab.db.CardDTO;
@@ -29,9 +29,6 @@ import kr.co.bit.osf.projectlab.flip3d.DisplayNextView;
 import kr.co.bit.osf.projectlab.flip3d.Flip3dAnimation;
 
 public class MainActivity extends AppCompatActivity {
-
-    final String TAG = "FlashCardMainTag";
-
     FlashCardDB db = null;
     StateDAO stateDao = null;
     StateDTO cardState = null;
@@ -55,17 +52,17 @@ public class MainActivity extends AppCompatActivity {
         stateDao = db;
         cardState = stateDao.getState();
         if (cardState == null) {
-            Dlog.i(TAG, "db initialize:");
+            Dlog.i("db initialize:");
             db.initialize();
             cardState = stateDao.getState();
         }
-        Dlog.i(TAG, "read card state:" + cardState);
+        Dlog.i("read card state:" + cardState);
 
         // read card list by state
         cardDao = db;
         cardList = cardDao.getCardByBoxId(cardState.getBoxId());
-        Dlog.i(TAG, "card list:size:" + cardList.size());
-        Dlog.i(TAG, "card list:value:" + cardList);
+        Dlog.i("card list:size:" + cardList.size());
+        Dlog.i("card list:value:" + cardList);
 
         // show card list
         // find view pager
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.cardViewGalleryButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dlog.i(TAG, "cardViewGalleryButton clicked");
+                Dlog.i("cardViewGalleryButton clicked");
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
@@ -95,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         // write card state
         stateDao.updateState(cardState);
-        Dlog.i(TAG, "write card state:" + cardState);
+        Dlog.i("write card state:" + cardState);
     }
 
     // pager adapter
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             this.context = context;
             this.list = list;
             inflater = LayoutInflater.from(context);
-            Dlog.i(TAG, "list:size():" + list.size());
+            Dlog.i("list:size():" + list.size());
         }
 
         @Override
@@ -125,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Dlog.i(TAG, "instantiateItem:position:" + position);
+            Dlog.i("position:" + position);
 
             View view = inflater.inflate(R.layout.activity_main_view_pager_child, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.cardViewPagerChildImage);
@@ -172,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            Dlog.i(TAG, "destroyItem:position:" + position);
+            Dlog.i("position:" + position);
             container.removeView((View)object);
         }
 
@@ -206,16 +203,16 @@ public class MainActivity extends AppCompatActivity {
 
         // save holder
         view.setTag(holder);
-        Dlog.i(TAG, "childViewClicked:holder:" + holder);
+        Dlog.i("holder:" + holder);
     }
 
     private void childViewLongClicked(View view) {
-        PagerHolder holder = (PagerHolder)view.getTag();
-        holder.card.setName("is updated");
-        Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_SHORT).show();
-        view.setTag(holder);
-        pagerAdapter.notifyDataSetChanged();    // update view pager
-        Dlog.i(TAG, "childViewLongClicked");
+        Dlog.i("card id:" + ((PagerHolder)view.getTag()).getCard().getId());
+        // todo: start card edit activity
+        Intent intent = new Intent(this, CardEditActivity.class);
+        intent.putExtra(IntentExtrasName.REQUEST_CODE, IntentRequestCode.CARD_EDIT);
+        intent.putExtra(IntentExtrasName.SEND_DATA, ((PagerHolder)view.getTag()).getCard());
+        startActivityForResult(intent, IntentRequestCode.CARD_EDIT);
     }
 
     private class PagerHolder {
@@ -262,30 +259,36 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Dlog.i(TAG,"requestCode=" + requestCode + ",resultCode=" + resultCode);
+        Dlog.i("requestCode=" + requestCode + ",resultCode=" + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case IntentRequestCode.SELECT_PICTURE:
                     // get image path
                     String imagePath = ImageUtil.getImagePathFromIntentData(this, data);
-                    Dlog.i(TAG,"selected picture path:" + imagePath);
+                    Dlog.i("selected picture path:" + imagePath);
                     // get image name
                     String imageName = ImageUtil.getNameFromPath(imagePath);
-                    Dlog.i(TAG,"selected picture name:" + imageName);
+                    Dlog.i("selected picture name:" + imageName);
                     // get card dto
                     CardDTO newCard =  new CardDTO(imageName, imagePath,
                             FlashCardDB.CardEntry.TYPE_USER, cardState.getBoxId());
                     // get last sequence and set next sequence
-                    Dlog.i(TAG, "get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
+                    Dlog.i("get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
                     newCard.setSeq(cardList.get(cardList.size() - 1).getSeq() + 1);
                     // save new card to db
                     cardDao.addCard(newCard);
                     // add card list
                     cardList.add(newCard);
                     pagerAdapter.notifyDataSetChanged();    // update view pager
-                    Dlog.i(TAG, "add card list:" + imageName);
+                    Dlog.i("add card list:" + imageName);
                     break;
                 case IntentRequestCode.CAPTURE_IMAGE:
+                    break;
+                case IntentRequestCode.CARD_EDIT:
+                    // get result data
+                    CardDTO returnCard = (CardDTO)data.getParcelableExtra(IntentExtrasName.RETURN_DATA);
+                    Dlog.i("returnCard:" + returnCard);
+                    // todo: refresh data
                     break;
             }
         }
