@@ -7,7 +7,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import kr.co.bit.osf.projectlab.common.Dlog;
 import kr.co.bit.osf.projectlab.common.ImageUtil;
 import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.db.CardDAO;
@@ -55,17 +55,17 @@ public class MainActivity extends AppCompatActivity {
         stateDao = db;
         cardState = stateDao.getState();
         if (cardState == null) {
-            Log.i(TAG, "db initialize:");
+            Dlog.i(TAG, "db initialize:");
             db.initialize();
             cardState = stateDao.getState();
         }
-        Log.i(TAG, "read card state:" + cardState);
+        Dlog.i(TAG, "read card state:" + cardState);
 
         // read card list by state
         cardDao = db;
         cardList = cardDao.getCardByBoxId(cardState.getBoxId());
-        Log.i(TAG, "card list:size:" + cardList.size());
-        Log.i(TAG, "card list:value:" + cardList);
+        Dlog.i(TAG, "card list:size:" + cardList.size());
+        Dlog.i(TAG, "card list:value:" + cardList);
 
         // show card list
         // find view pager
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.cardViewGalleryButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "cardViewGalleryButton clicked");
+                Dlog.i(TAG, "cardViewGalleryButton clicked");
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
         // write card state
         stateDao.updateState(cardState);
-        Log.i(TAG, "write card state:" + cardState);
+        Dlog.i(TAG, "write card state:" + cardState);
     }
 
     // pager adapter
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             this.context = context;
             this.list = list;
             inflater = LayoutInflater.from(context);
-            Log.i(TAG, "list:size():" + list.size());
+            Dlog.i(TAG, "list:size():" + list.size());
         }
 
         @Override
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Log.i(TAG, "instantiateItem:position:" + position);
+            Dlog.i(TAG, "instantiateItem:position:" + position);
 
             View view = inflater.inflate(R.layout.activity_main_view_pager_child, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.cardViewPagerChildImage);
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            Log.i(TAG, "destroyItem:position:" + position);
+            Dlog.i(TAG, "destroyItem:position:" + position);
             container.removeView((View)object);
         }
 
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
         // save holder
         view.setTag(holder);
-        Log.i(TAG, "childViewClicked:holder:" + holder);
+        Dlog.i(TAG, "childViewClicked:holder:" + holder);
     }
 
     private void childViewLongClicked(View view) {
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_SHORT).show();
         view.setTag(holder);
         pagerAdapter.notifyDataSetChanged();    // update view pager
-        Log.i(TAG, "childViewLongClicked");
+        Dlog.i(TAG, "childViewLongClicked");
     }
 
     private class PagerHolder {
@@ -262,28 +262,28 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG,"requestCode=" + requestCode + ",resultCode=" + resultCode);
+        Dlog.i(TAG,"requestCode=" + requestCode + ",resultCode=" + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case IntentRequestCode.SELECT_PICTURE:
                     // get image path
                     String imagePath = ImageUtil.getImagePathFromIntentData(this, data);
-                    Log.i(TAG,"selected picture path:" + imagePath);
+                    Dlog.i(TAG,"selected picture path:" + imagePath);
                     // get image name
                     String imageName = ImageUtil.getNameFromPath(imagePath);
-                    Log.i(TAG,"selected picture name:" + imageName);
+                    Dlog.i(TAG,"selected picture name:" + imageName);
                     // get card dto
                     CardDTO newCard =  new CardDTO(imageName, imagePath,
                             FlashCardDB.CardEntry.TYPE_USER, cardState.getBoxId());
                     // get last sequence and set next sequence
-                    Log.i(TAG, "get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
+                    Dlog.i(TAG, "get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
                     newCard.setSeq(cardList.get(cardList.size() - 1).getSeq() + 1);
                     // save new card to db
                     cardDao.addCard(newCard);
                     // add card list
                     cardList.add(newCard);
                     pagerAdapter.notifyDataSetChanged();    // update view pager
-                    Log.i(TAG, "add card list:" + imageName);
+                    Dlog.i(TAG, "add card list:" + imageName);
                     break;
                 case IntentRequestCode.CAPTURE_IMAGE:
                     break;
