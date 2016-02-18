@@ -43,21 +43,4 @@ public class Dlog {
         return sb.toString();
 
     }
-
-    //
-    public static final void e(String tag, String message) {
-        if (BaseApplication.DEBUG) Log.e(tag, buildLogMsg(message));
-    }
-    public static final void w(String tag, String message) {
-        if (BaseApplication.DEBUG) Log.w(tag, buildLogMsg(message));
-    }
-    public static final void i(String tag, String message) {
-        if (BaseApplication.DEBUG) Log.i(tag, buildLogMsg(message));
-    }
-    public static final void d(String tag, String message) {
-        if (BaseApplication.DEBUG) Log.d(tag, buildLogMsg(message));
-    }
-    public static final void v(String tag, String message) {
-        if (BaseApplication.DEBUG) Log.v(tag, buildLogMsg(message));
-    }
 }
