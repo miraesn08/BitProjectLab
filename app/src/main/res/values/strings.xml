@@ -11,4 +11,6 @@
     <string name="card_demo_data3_image_name">rabbit</string>
     <!--main activity-->
     <string name="card_view_gallery_button_text">Gallery</string>
+    <!--intent-->
+    <string name="title_intent_select_picture">사진을 선택하세요</string>
 </resources>

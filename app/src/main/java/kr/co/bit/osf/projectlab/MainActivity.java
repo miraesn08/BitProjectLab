@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import kr.co.bit.osf.projectlab.common.ImageUtil;
+import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.db.CardDAO;
 import kr.co.bit.osf.projectlab.db.CardDTO;
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
@@ -38,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
     ViewPager pager;
     CardViewPagerAdapter pagerAdapter;
-
-    final int REQ_CODE_SELECT_PICTURE = 501;
-    final int REQ_CODE_CAPTURE_IMAGE = 502;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
                 startActivityForResult(
-                        Intent.createChooser(intent, "Select Picture"),
-                        REQ_CODE_SELECT_PICTURE);
+                        Intent.createChooser(intent, getString(R.string.title_intent_select_picture)),
+                        IntentRequestCode.SELECT_PICTURE);
             }
         });
     }
@@ -213,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
     private void childViewLongClicked(View view) {
         PagerHolder holder = (PagerHolder)view.getTag();
         holder.card.setName("is updated");
+        Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_SHORT).show();
         view.setTag(holder);
         pagerAdapter.notifyDataSetChanged();    // update view pager
         Log.i(TAG, "childViewLongClicked");
@@ -265,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG,"requestCode=" + requestCode + ",resultCode=" + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQ_CODE_SELECT_PICTURE:
+                case IntentRequestCode.SELECT_PICTURE:
                     // get image path
                     String imagePath = ImageUtil.getImagePathFromIntentData(this, data);
                     Log.i(TAG,"selected picture path:" + imagePath);
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
                     pagerAdapter.notifyDataSetChanged();    // update view pager
                     Log.i(TAG, "add card list:" + imageName);
                     break;
-                case REQ_CODE_CAPTURE_IMAGE:
+                case IntentRequestCode.CAPTURE_IMAGE:
                     break;
             }
         }
