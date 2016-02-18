@@ -156,6 +156,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            // set long click listener
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    childViewLongClicked(v);
+                    return true;
+                }
+            });
+
             view.setTag(holder);
             container.addView(view);
 
@@ -199,6 +208,14 @@ public class MainActivity extends AppCompatActivity {
         // save holder
         view.setTag(holder);
         Log.i(TAG, "childViewClicked:holder:" + holder);
+    }
+
+    private void childViewLongClicked(View view) {
+        PagerHolder holder = (PagerHolder)view.getTag();
+        holder.card.setName("is updated");
+        view.setTag(holder);
+        pagerAdapter.notifyDataSetChanged();    // update view pager
+        Log.i(TAG, "childViewLongClicked");
     }
 
     private class PagerHolder {
