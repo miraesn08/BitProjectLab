@@ -15,18 +15,27 @@ import kr.co.bit.osf.projectlab.R;
 
 public class LabViewPagerActivity extends AppCompatActivity {
     final String TAG = "LabViewPagerActivity";
+    ViewPager viewPager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lab_view_pager);
 
-        Log.i(TAG, "onCreate");
-        ViewPager viewPager = (ViewPager) findViewById(R.id.labViewPagerViewPager);
-        Log.i(TAG, "viewPager");
+        //Log.i(TAG, "onCreate");
+        viewPager = (ViewPager) findViewById(R.id.labViewPagerViewPager);
+        //Log.i(TAG, "viewPager");
         ImagePagerAdapter adapter = new ImagePagerAdapter();
         viewPager.setAdapter(adapter);
-        Log.i(TAG, "setAdapter");
+        //Log.i(TAG, "setAdapter");
+
+        viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                Log.i(TAG, "onPageSelected:" + position);
+                super.onPageSelected(position);
+            }
+        });
     }
 
     private class ImagePagerAdapter extends PagerAdapter {
@@ -39,9 +48,7 @@ public class LabViewPagerActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            int count =  list.length;
-            //Log.i(TAG, "getCount:" + count);
-            return count;
+            return list.length;
         }
 
         @Override
@@ -51,14 +58,14 @@ public class LabViewPagerActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Log.i(TAG, "instantiateItem:" + position);
+            //Log.i(TAG, "instantiateItem:" + position);
             LayoutInflater inflater = LayoutInflater.from(LabViewPagerActivity.this);
             View view = inflater.inflate(R.layout.activity_lab_view_pager_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.labViewPagerItemImage);
             TextView textView = (TextView) view.findViewById(R.id.labViewPagerItemText);
 
             PagerHolder holder = new PagerHolder(position, list[position], true, imageView, textView);
-            Log.i(TAG, "instantiateItem:holder:" + holder);
+            //Log.i(TAG, "instantiateItem:holder:" + holder);
             imageView.setImageResource(holder.getImageId());
             imageView.setVisibility(View.VISIBLE);
             textView.setText("position:" + holder.getPosition());
@@ -69,7 +76,7 @@ public class LabViewPagerActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     PagerHolder holder = (PagerHolder) v.getTag();
-                    Log.i(TAG, "onClick:holder:" + holder);
+                    //Log.i(TAG, "onClick:holder:" + holder);
 
                     // switch
                     if (holder.isFront()) {
@@ -80,7 +87,8 @@ public class LabViewPagerActivity extends AppCompatActivity {
                         holder.getTextView().setVisibility(View.INVISIBLE);
                     }
                     holder.flip();
-                    Log.i(TAG, "onClick:flip:" + holder);
+                    //Log.i(TAG, "onClick:flip:" + holder);
+                    Log.i(TAG, "onClick:currentItem:" + viewPager.getCurrentItem());
 
                     // save holder
                     v.setTag(holder);
@@ -95,7 +103,7 @@ public class LabViewPagerActivity extends AppCompatActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            ((ViewPager) container).removeView((View) object);
+            container.removeView((View) object);
         }
     }
 
