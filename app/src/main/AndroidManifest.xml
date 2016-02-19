@@ -32,13 +32,19 @@
             android:name=".lab.LabMainActivity"
             android:label="Lab" />
         <activity android:name=".CardEditActivity" />
-        <activity android:name=".lab.LabViewPagerActivity"
-            android:label="@string/title_lab_view_pager" >
+        <activity
+            android:name=".lab.LabViewPagerActivity"
+            android:label="@string/title_lab_view_pager">
+        </activity>
+        <activity
+            android:name=".lab.LabFlipAnimationActivity"
+            android:label="@string/title_lab_flip_animation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
