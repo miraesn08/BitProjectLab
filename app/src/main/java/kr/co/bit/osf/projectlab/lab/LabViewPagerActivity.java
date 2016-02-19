@@ -11,12 +11,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import kr.co.bit.osf.projectlab.R;
 
 public class LabViewPagerActivity extends AppCompatActivity {
     final String TAG = "LabViewPagerActivity";
     ViewPager viewPager = null;
-    int lastPosition = 0;
+
+    // view pager item map
+    Map<Integer, View>itemViewMap = new HashMap<Integer, View>();
+    int lastPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +39,21 @@ public class LabViewPagerActivity extends AppCompatActivity {
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                Log.i(TAG, "onPageSelected:" + position);
                 super.onPageSelected(position);
+                Log.i(TAG, "onPageSelected:" + position + ", lastPosition=" + lastPosition);
+                // view pager item map
+                View lastView = itemViewMap.get(lastPosition);
+                if (lastView != null) {
+                    Log.i(TAG, "lastView is not null");
+                    PagerHolder holder = (PagerHolder) lastView.getTag();
+                    if (holder.isFront == false) {
+                        Log.i(TAG, "lastView is back");
+                        // is showing text --> show image
+                        holder.getImageView().setVisibility(View.VISIBLE);
+                        holder.getTextView().setVisibility(View.INVISIBLE);
+                        holder.flip();
+                    }
+                }
             }
 
             @Override
@@ -49,7 +68,7 @@ public class LabViewPagerActivity extends AppCompatActivity {
                 if (state == ViewPager.SCROLL_STATE_DRAGGING) {
                     lastPosition = viewPager.getCurrentItem();
                 }
-                Log.i(TAG, "onPageScrollStateChanged:" + state + ", lastPosition=" + lastPosition);
+                //Log.i(TAG, "onPageScrollStateChanged:" + state + ", lastPosition=" + lastPosition);
             }
         });
     }
@@ -114,12 +133,17 @@ public class LabViewPagerActivity extends AppCompatActivity {
             view.setTag(holder);
             container.addView(view);
 
+            // view pager item map
+            itemViewMap.put(position, view);
+
             return view;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
+            // view pager item map
+            itemViewMap.remove(position);
         }
     }
 
