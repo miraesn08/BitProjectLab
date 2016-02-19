@@ -16,6 +16,7 @@ import kr.co.bit.osf.projectlab.R;
 public class LabViewPagerActivity extends AppCompatActivity {
     final String TAG = "LabViewPagerActivity";
     ViewPager viewPager = null;
+    int lastPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,21 @@ public class LabViewPagerActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 Log.i(TAG, "onPageSelected:" + position);
                 super.onPageSelected(position);
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                //Log.i(TAG, "onPageScrolled:" + position);
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    lastPosition = viewPager.getCurrentItem();
+                }
+                Log.i(TAG, "onPageScrollStateChanged:" + state + ", lastPosition=" + lastPosition);
             }
         });
     }
