@@ -2,7 +2,8 @@
     <string name="app_name">FlashCard</string>
     <!--activity title-->
     <string name="title_lab_view_pager">ViewPager</string>
-    <string name="title_lab_flip_animation">ViewPager</string>
+    <string name="title_lab_flip_animation">FlipAnimation</string>
+    <string name="title_lab_retrofit">Retrofit</string>
     <!--box demo data-->
     <string name="box_demo_data_name">Animal</string>
     <!--card demo data-->
