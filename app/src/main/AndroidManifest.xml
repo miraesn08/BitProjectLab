@@ -41,7 +41,7 @@
             android:label="@string/title_lab_flip_animation" />
         <activity
             android:name=".lab.LabRetrofitActivity"
-            android:label="@string/title_lab_retrofit"></activity>
+            android:label="@string/title_lab_retrofit"/>
         <activity android:name=".lab.LabStateChangeMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,7 +49,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".lab.LabStateChangeSubActivity"></activity>
+        <activity android:name=".lab.LabStateChangeSubActivity"
+            android:label="LabStateChangeSub"/>
     </application>
 
 </manifest>

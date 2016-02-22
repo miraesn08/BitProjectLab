@@ -9,11 +9,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="kr.co.bit.osf.projectlab.lab.LabStateChangeSubActivity">
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/labStateChangeSubEditText"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:inputType="text"
+        android:width="200dp" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="END"
         android:id="@+id/labStateChangeSubEndButton"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/labStateChangeSubEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="71dp" />
 </RelativeLayout>
