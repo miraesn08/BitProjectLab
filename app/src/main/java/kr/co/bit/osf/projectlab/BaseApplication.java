@@ -1,4 +1,4 @@
-package kr.co.bit.osf.projectlab.common;
+package kr.co.bit.osf.projectlab;
 
 import android.app.Application;
 import android.content.Context;

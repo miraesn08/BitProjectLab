@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FlashCard</string>
+    <string name="app_name">FlashCardLab</string>
     <!--activity title-->
     <string name="title_lab_view_pager">ViewPager</string>
     <string name="title_lab_flip_animation">FlipAnimation</string>

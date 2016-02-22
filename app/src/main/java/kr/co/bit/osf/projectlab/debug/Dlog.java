@@ -1,6 +1,8 @@
-package kr.co.bit.osf.projectlab.common;
+package kr.co.bit.osf.projectlab.debug;
 
 import android.util.Log;
+
+import kr.co.bit.osf.projectlab.BaseApplication;
 
 // http://gun0912.tistory.com/12
 public class Dlog {

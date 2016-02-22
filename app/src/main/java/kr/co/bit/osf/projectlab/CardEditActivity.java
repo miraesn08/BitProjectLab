@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import kr.co.bit.osf.projectlab.common.Dlog;
+import kr.co.bit.osf.projectlab.debug.Dlog;
 import kr.co.bit.osf.projectlab.common.IntentExtrasName;
 import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.db.CardDTO;

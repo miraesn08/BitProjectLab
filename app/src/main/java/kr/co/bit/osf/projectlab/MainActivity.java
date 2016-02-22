@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import kr.co.bit.osf.projectlab.common.Dlog;
+import kr.co.bit.osf.projectlab.debug.Dlog;
 import kr.co.bit.osf.projectlab.common.ImageUtil;
 import kr.co.bit.osf.projectlab.common.IntentExtrasName;
 import kr.co.bit.osf.projectlab.common.IntentRequestCode;
