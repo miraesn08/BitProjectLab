@@ -34,9 +34,27 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Dlog.i("onRestoreInstanceState");
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         Dlog.i("onResume");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Dlog.i("onSaveInstanceState");
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Dlog.i("finish");
     }
 
     @Override
@@ -61,18 +79,6 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Dlog.i("onDestroy");
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Dlog.i("onSaveInstanceState");
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Dlog.i("onRestoreInstanceState");
     }
 
 }

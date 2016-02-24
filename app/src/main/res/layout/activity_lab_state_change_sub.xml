@@ -12,7 +12,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/labStateChangeSubEditText"
+        android:id="@+id/labStateChangeSubEditView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:inputType="text"
@@ -21,9 +21,9 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="END"
-        android:id="@+id/labStateChangeSubEndButton"
-        android:layout_below="@+id/labStateChangeSubEditText"
+        android:text="@string/lab_state_change_sub_input_text_button_text"
+        android:id="@+id/labStateChangeSubInputTextButton"
+        android:layout_below="@+id/labStateChangeSubEditView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="71dp" />
 </RelativeLayout>
