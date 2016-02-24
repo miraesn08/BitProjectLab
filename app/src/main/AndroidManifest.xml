@@ -42,7 +42,8 @@
         <activity
             android:name=".lab.LabRetrofitActivity"
             android:label="@string/title_lab_retrofit"/>
-        <activity android:name=".lab.LabStateChangeMainActivity">
+        <activity android:name=".lab.LabStateChangeMainActivity"
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

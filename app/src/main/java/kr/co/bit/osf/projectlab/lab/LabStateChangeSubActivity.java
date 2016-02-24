@@ -2,12 +2,15 @@ package kr.co.bit.osf.projectlab.lab;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
 import kr.co.bit.osf.projectlab.R;
+import kr.co.bit.osf.projectlab.common.IntentExtrasName;
+import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.debug.Dlog;
 
 public class LabStateChangeSubActivity extends AppCompatActivity {
@@ -81,8 +84,19 @@ public class LabStateChangeSubActivity extends AppCompatActivity {
 
     @Override
     public void finish() {
-        super.finish();
         Dlog.i("finish");
+        // intent result
+        // is updated?
+        int returnCode = IntentRequestCode.SELECT_PICTURE;
+        Dlog.i("finish:returnCode:" + returnCode);
+        // return data
+        int intentResultCode = RESULT_OK;
+        Intent data = new Intent();
+        data.putExtra(IntentExtrasName.RETURN_DATA, returnCode);
+        setResult(intentResultCode, data);
+        Dlog.i("setResult:" + intentResultCode + ",IntentExtrasName.RETURN_DATA:" + returnCode);
+        //
+        super.finish();
     }
 
     @Override

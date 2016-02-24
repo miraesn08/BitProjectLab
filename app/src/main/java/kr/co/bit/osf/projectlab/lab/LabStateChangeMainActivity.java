@@ -1,11 +1,14 @@
 package kr.co.bit.osf.projectlab.lab;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Toast;
 
 import kr.co.bit.osf.projectlab.R;
+import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.debug.Dlog;
 
 public class LabStateChangeMainActivity extends AppCompatActivity {
@@ -22,9 +25,30 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LabStateChangeMainActivity.this,
                         LabStateChangeSubActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, IntentRequestCode.CARD_EDIT);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Dlog.i("onActivityResult:requestCode:" + requestCode);
+        Dlog.i("onActivityResult:resultCode:" + resultCode);
+        Dlog.i("onActivityResult:Intent data is null:" + (data == null));
+    }
+
+    // http://stackoverflow.com/questions/5726657/how-to-detect-orientation-change-in-layout-in-android
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Dlog.i("onConfigurationChanged");
+
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -53,8 +77,8 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
 
     @Override
     public void finish() {
-        super.finish();
         Dlog.i("finish");
+        super.finish();
     }
 
     @Override
