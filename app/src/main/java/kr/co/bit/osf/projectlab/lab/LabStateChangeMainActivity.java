@@ -2,8 +2,12 @@ package kr.co.bit.osf.projectlab.lab;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.Toast;
 
@@ -12,6 +16,12 @@ import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.debug.Dlog;
 
 public class LabStateChangeMainActivity extends AppCompatActivity {
+    // http://www.informit.com/articles/article.aspx?p=2262133&seqNum=4
+    OrientationEventListener mOrientationListener;
+
+    // orientation state
+    final String stateData = "stateData";
+    OrientationState state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,13 +31,40 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
 
         (findViewById(R.id.labStateChangeMainRunButton))
                 .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(LabStateChangeMainActivity.this,
+                                LabStateChangeSubActivity.class);
+                        startActivityForResult(intent, IntentRequestCode.CARD_EDIT);
+                    }
+                });
+
+        // orienation
+        mOrientationListener = new OrientationEventListener(this,
+                SensorManager.SENSOR_DELAY_NORMAL) {
+
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LabStateChangeMainActivity.this,
-                        LabStateChangeSubActivity.class);
-                startActivityForResult(intent, IntentRequestCode.CARD_EDIT);
+            public void onOrientationChanged(int orientation) {
+                Dlog.v("Orientation changed to " + orientation);
+
             }
-        });
+        };
+
+        if (mOrientationListener.canDetectOrientation()) {
+            Dlog.v("Can detect orientation");
+            mOrientationListener.enable();
+        } else {
+            Dlog.v("Cannot detect orientation");
+            mOrientationListener.disable();
+        }
+
+        // orientation state
+        if (state == null) {
+            Dlog.i("state == null");
+            // http://stackoverflow.com/questions/10380989/how-do-i-get-the-current-orientation-activityinfo-screen-orientation-of-an-a
+            state = new OrientationState(getResources().getConfiguration().orientation);
+            Dlog.i("getResources().getConfiguration().orientation:" + state);
+        }
     }
 
     @Override
@@ -72,7 +109,8 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Dlog.i("onSaveInstanceState");
+        outState.putParcelable(stateData, state);
+        Dlog.i("onSaveInstanceState:state:" + state);
     }
 
     @Override
@@ -105,4 +143,54 @@ public class LabStateChangeMainActivity extends AppCompatActivity {
         Dlog.i("onDestroy");
     }
 
+    private class OrientationState implements Parcelable {
+        int orientation;
+
+        public OrientationState(int orientation) {
+            this.orientation = orientation;
+        }
+
+        protected OrientationState(Parcel in) {
+            orientation = in.readInt();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(orientation);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public final Creator<OrientationState> CREATOR = new Creator<OrientationState>() {
+            @Override
+            public OrientationState createFromParcel(Parcel in) {
+                return new OrientationState(in);
+            }
+
+            @Override
+            public OrientationState[] newArray(int size) {
+                return new OrientationState[size];
+            }
+        };
+
+        public int getOrientation() {
+            return orientation;
+        }
+
+        public void setOrientation(int orientation) {
+            this.orientation = orientation;
+        }
+
+        @Override
+        public String toString() {
+            return "OrientationState{" +
+                    "orientation=" + orientation +
+                    "," + ((orientation == Configuration.ORIENTATION_PORTRAIT)
+                            ? "portrait" : "landscape") +
+                    '}';
+        }
+    }
 }
