@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="kr.co.bit.osf.projectlab">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -15,6 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".lab.LabCameraActivity" android:label="Camera" />
+        <activity android:name=".lab.LabImageUtilActivity" android:label="Image Util" />
+        <activity android:name=".lab.LabListViewActivity" android:label="List View" />
+        <activity android:name=".lab.LabDemoViewActivity" android:label="Demo View" />
+        <activity android:name=".lab.LabMainActivity" android:label="Lab" />
     </application>
 
 </manifest>

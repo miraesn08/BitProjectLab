@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">ProjectLab</string>
+    <string name="app_name">FlashCard</string>
+    <!--box demo data-->
+    <string name="box_demo_data_name">Animal</string>
+    <!--card demo data-->
+    <string name="card_demo_data1_name">dog</string>
+    <string name="card_demo_data1_image_name">dog</string>
+    <string name="card_demo_data2_name">cat</string>
+    <string name="card_demo_data2_image_name">cat</string>
+    <string name="card_demo_data3_name">rabbit</string>
+    <string name="card_demo_data3_image_name">rabbit</string>
+    <!--main activity-->
+    <string name="card_view_gallery_button_text">Gallery</string>
 </resources>
