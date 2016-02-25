@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">FlashCard</string>
+    <string name="app_name">FlashCardLab</string>
+    <!--activity title-->
+    <string name="title_lab_view_pager">ViewPager</string>
+    <string name="title_lab_flip_animation">FlipAnimation</string>
+    <string name="title_lab_retrofit">Retrofit</string>
     <!--box demo data-->
     <string name="box_demo_data_name">Animal</string>
     <!--card demo data-->
@@ -11,4 +15,7 @@
     <string name="card_demo_data3_image_name">rabbit</string>
     <!--main activity-->
     <string name="card_view_gallery_button_text">Gallery</string>
+    <!--intent-->
+    <string name="title_intent_select_picture">사진을 선택하세요</string>
+    <string name="lab_state_change_sub_input_text_button_text">Input Text</string>
 </resources>

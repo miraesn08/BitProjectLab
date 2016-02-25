@@ -7,25 +7,50 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".lab.LabCameraActivity"
+            android:label="Camera" />
+        <activity
+            android:name=".lab.LabImageUtilActivity"
+            android:label="Image Util" />
+        <activity
+            android:name=".lab.LabListViewActivity"
+            android:label="List View" />
+        <activity
+            android:name=".lab.LabDemoViewActivity"
+            android:label="Demo View" />
+        <activity
+            android:name=".lab.LabMainActivity"
+            android:label="Lab" />
+        <activity android:name=".CardEditActivity" />
+        <activity
+            android:name=".lab.LabViewPagerActivity"
+            android:label="@string/title_lab_view_pager" />
+        <activity
+            android:name=".lab.LabFlipAnimationActivity"
+            android:label="@string/title_lab_flip_animation" />
+        <activity
+            android:name=".lab.LabRetrofitActivity"
+            android:label="@string/title_lab_retrofit"/>
+        <activity android:name=".lab.LabStateChangeMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".lab.LabCameraActivity" android:label="Camera" />
-        <activity android:name=".lab.LabImageUtilActivity" android:label="Image Util" />
-        <activity android:name=".lab.LabListViewActivity" android:label="List View" />
-        <activity android:name=".lab.LabDemoViewActivity" android:label="Demo View" />
-        <activity android:name=".lab.LabMainActivity" android:label="Lab" />
+        <activity android:name=".lab.LabStateChangeSubActivity"
+            android:label="LabStateChangeSub"/>
     </application>
 
 </manifest>

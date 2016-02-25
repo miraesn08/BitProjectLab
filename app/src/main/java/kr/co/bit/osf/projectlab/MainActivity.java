@@ -5,27 +5,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
+import kr.co.bit.osf.projectlab.debug.Dlog;
 import kr.co.bit.osf.projectlab.common.ImageUtil;
+import kr.co.bit.osf.projectlab.common.IntentExtrasName;
+import kr.co.bit.osf.projectlab.common.IntentRequestCode;
 import kr.co.bit.osf.projectlab.db.CardDAO;
 import kr.co.bit.osf.projectlab.db.CardDTO;
 import kr.co.bit.osf.projectlab.db.FlashCardDB;
 import kr.co.bit.osf.projectlab.db.StateDAO;
 import kr.co.bit.osf.projectlab.db.StateDTO;
+import kr.co.bit.osf.projectlab.flip3d.DisplayNextView;
+import kr.co.bit.osf.projectlab.flip3d.Flip3dAnimation;
 
 public class MainActivity extends AppCompatActivity {
-
-    final String TAG = "FlashCardMainTag";
-
     FlashCardDB db = null;
     StateDAO stateDao = null;
     StateDTO cardState = null;
@@ -35,49 +38,50 @@ public class MainActivity extends AppCompatActivity {
     ViewPager pager;
     CardViewPagerAdapter pagerAdapter;
 
-    final int REQ_CODE_SELECT_PICTURE = 501;
-    final int REQ_CODE_CAPTURE_IMAGE = 502;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // todo: read state from db
+        // full screen
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.hide();
+
+        // read state from db
         db = new FlashCardDB(this);
         stateDao = db;
         cardState = stateDao.getState();
         if (cardState == null) {
-            Log.i(TAG, "db initialize:");
+            Dlog.i("db initialize:");
             db.initialize();
             cardState = stateDao.getState();
         }
-        Log.i(TAG, "read card state:" + cardState);
+        Dlog.i("read card state:" + cardState);
 
-        // todo: read card list by state
+        // read card list by state
         cardDao = db;
         cardList = cardDao.getCardByBoxId(cardState.getBoxId());
-        Log.i(TAG, "card list:size:" + cardList.size());
-        Log.i(TAG, "card list:value:" + cardList);
+        Dlog.i("card list:size:" + cardList.size());
+        Dlog.i("card list:value:" + cardList);
 
-        // todo: show card list
-        // todo: find view pager
+        // show card list
+        // find view pager
         pager = (ViewPager) findViewById(R.id.cardViewPager);
-        // todo: set pager adapter
+        // set pager adapter
         pagerAdapter = new CardViewPagerAdapter(getApplicationContext(), cardList);
         pager.setAdapter(pagerAdapter);
 
-        // todo: add card from gallery
+        // add card from gallery
         (findViewById(R.id.cardViewGalleryButton)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "cardViewGalleryButton clicked");
+                Dlog.i("cardViewGalleryButton clicked");
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
                 startActivityForResult(
-                        Intent.createChooser(intent, "Select Picture"),
-                        REQ_CODE_SELECT_PICTURE);
+                        Intent.createChooser(intent, getString(R.string.title_intent_select_picture)),
+                        IntentRequestCode.SELECT_PICTURE);
             }
         });
     }
@@ -86,12 +90,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        // todo: write card state
+        // write card state
         stateDao.updateState(cardState);
-        Log.i(TAG, "write card state:" + cardState);
+        Dlog.i("write card state:" + cardState);
     }
 
-    // todo: pager adapter
+    // pager adapter
     private class CardViewPagerAdapter extends PagerAdapter {
         List<CardDTO> list = null;
 
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             this.context = context;
             this.list = list;
             inflater = LayoutInflater.from(context);
-            Log.i(TAG, "list:size():" + list.size());
+            Dlog.i("list:size():" + list.size());
         }
 
         @Override
@@ -118,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Log.i(TAG, "instantiateItem:position:" + position);
+            Dlog.i("position:" + position);
 
             View view = inflater.inflate(R.layout.activity_main_view_pager_child, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.cardViewPagerChildImage);
@@ -140,11 +144,20 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(holder.card.getName());
             textView.setVisibility(View.INVISIBLE);
 
-            // todo: set click listener
+            // set click listener
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     childViewClicked(v);
+                }
+            });
+
+            // set long click listener
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    childViewLongClicked(v);
+                    return true;
                 }
             });
 
@@ -156,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            Log.i(TAG, "destroyItem:position:" + position);
+            Dlog.i("position:" + position);
             container.removeView((View)object);
         }
 
@@ -177,23 +190,29 @@ public class MainActivity extends AppCompatActivity {
         PagerHolder holder = (PagerHolder)view.getTag();
         //Toast.makeText(getApplicationContext(), holder.card.getName(), Toast.LENGTH_LONG).show();
 
-        // todo: change front/back state
+        // flip animation by front/back state
+        if (holder.isFront()) {
+            // show text
+            applyRotation(holder.isFront(), 0, -90, holder.getImageView(), holder.getTextView());
+        } else {
+            // show image
+            applyRotation(holder.isFront(), 0, 90, holder.getImageView(), holder.getTextView());
+        }
+        // change front/back state
         holder.flip();
 
-        // todo: flip animation by front/back state
-        if (holder.isFront()) {
-            // todo: show image
-            (holder.getImageView()).setVisibility(View.VISIBLE);
-            (holder.getTextView()).setVisibility(View.INVISIBLE);
-        } else {
-            // todo: show text
-            (holder.getImageView()).setVisibility(View.INVISIBLE);
-            (holder.getTextView()).setVisibility(View.VISIBLE);
-        }
-
-        // todo: save holder
+        // save holder
         view.setTag(holder);
-        Log.i(TAG, "childViewClicked:holder:" + holder);
+        Dlog.i("holder:" + holder);
+    }
+
+    private void childViewLongClicked(View view) {
+        Dlog.i("card id:" + ((PagerHolder)view.getTag()).getCard().getId());
+        // todo: start card edit activity
+        Intent intent = new Intent(this, CardEditActivity.class);
+        intent.putExtra(IntentExtrasName.REQUEST_CODE, IntentRequestCode.CARD_EDIT);
+        intent.putExtra(IntentExtrasName.SEND_DATA, ((PagerHolder)view.getTag()).getCard());
+        startActivityForResult(intent, IntentRequestCode.CARD_EDIT);
     }
 
     private class PagerHolder {
@@ -240,32 +259,60 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG,"requestCode=" + requestCode + ",resultCode=" + resultCode);
+        Dlog.i("requestCode=" + requestCode + ",resultCode=" + resultCode);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQ_CODE_SELECT_PICTURE:
-                    // todo: get image path
+                case IntentRequestCode.SELECT_PICTURE:
+                    // get image path
                     String imagePath = ImageUtil.getImagePathFromIntentData(this, data);
-                    Log.i(TAG,"selected picture path:" + imagePath);
-                    // todo: get image name
+                    Dlog.i("selected picture path:" + imagePath);
+                    // get image name
                     String imageName = ImageUtil.getNameFromPath(imagePath);
-                    Log.i(TAG,"selected picture name:" + imageName);
-                    // todo: get card dto
+                    Dlog.i("selected picture name:" + imageName);
+                    // get card dto
                     CardDTO newCard =  new CardDTO(imageName, imagePath,
                             FlashCardDB.CardEntry.TYPE_USER, cardState.getBoxId());
-                    // todo: get last sequence and set next sequence
-                    Log.i(TAG, "get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
+                    // get last sequence and set next sequence
+                    Dlog.i("get last sequence:" + cardList.get(cardList.size() - 1).getSeq());
                     newCard.setSeq(cardList.get(cardList.size() - 1).getSeq() + 1);
-                    // todo: save new card to db
+                    // save new card to db
                     cardDao.addCard(newCard);
-                    // todo: add card list
+                    // add card list
                     cardList.add(newCard);
                     pagerAdapter.notifyDataSetChanged();    // update view pager
-                    Log.i(TAG, "add card list:" + imageName);
+                    Dlog.i("add card list:" + imageName);
                     break;
-                case REQ_CODE_CAPTURE_IMAGE:
+                case IntentRequestCode.CAPTURE_IMAGE:
+                    break;
+                case IntentRequestCode.CARD_EDIT:
+                    // get result data
+                    CardDTO returnCard = (CardDTO)data.getParcelableExtra(IntentExtrasName.RETURN_DATA);
+                    Dlog.i("returnCard:" + returnCard);
+                    // todo: refresh data
                     break;
             }
+        }
+    }
+
+    // http://www.inter-fuser.com/2009/08/android-animations-3d-flip.html
+    private void applyRotation(boolean isFirstImage, float start, float end,
+                               ImageView imageView, TextView textView) {
+        // Find the center of image
+        final float centerX = imageView.getWidth() / 2.0f;
+        final float centerY = imageView.getHeight() / 2.0f;
+
+        // Create a new 3D rotation with the supplied parameter
+        // The animation listener is used to trigger the next animation
+        final Flip3dAnimation rotation = new Flip3dAnimation(start, end, centerX, centerY);
+        rotation.setDuration(500);
+        rotation.setFillAfter(true);
+        rotation.setInterpolator(new AccelerateInterpolator());
+        rotation.setAnimationListener(new DisplayNextView(isFirstImage, imageView, textView));
+
+        if (isFirstImage) {
+            imageView.startAnimation(rotation);
+        } else {
+            textView.startAnimation(rotation);
         }
     }
 }
